@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.xolt.freecam.mixins",
+  "mixins": [
+    "BlockStateBaseMixin",
+    "EntityMixin",
+    "LivingEntityMixin"
+  ],
+  "client": [
+    "AvatarRendererMixin",
+    "CameraMixin",
+    "ClientPacketListenerMixin",
+    "EntityRenderDispatcherMixin",
+    "FullBrightMixin",
+    "GameRendererMixin",
+    "HudMixin",
+    "ItemInHandRendererMixin",
+    "LevelExtractorMixin",
+    "LocalPlayerMixin",
+    "MinecraftMixin",
+    "MultiPlayerGameModeMixin",
+    "OptionsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

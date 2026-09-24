@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.styna.stynastmc.skins.mixin",
+  "client": [
+    "AbstractClientPlayerMixin",
+    "SkinTextureDownloaderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,34 @@
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
+}
+
+neoForge {
+    neoFormVersion = neo_form_version
+    accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'))
+    validateAccessTransformers = true
+}
+
+dependencies {
+    // Both loaders ship Mixin and MixinExtras at runtime.
+    compileOnly "net.fabricmc:sponge-mixin:${mixin_version}"
+    compileOnly "io.github.llamalad7:mixinextras-common:${mixinextras_version}"
+    annotationProcessor "io.github.llamalad7:mixinextras-common:${mixinextras_version}"
+    compileOnly "fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${fcap_version}"
+}
+
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}
