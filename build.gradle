@@ -6,3 +6,14 @@ plugins {
 tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
+
+tasks.register('publishRelease', PublishForgejoRelease) {
+    group = 'publishing'
+    description = 'Builds Fabric + NeoForge and uploads them as a Forgejo release.'
+    dependsOn ':fabric:build', ':neoforge:build'
+    serverUrl = 'https://code.styna.net'
+    repo = 'Minecraft/StynaST-Client'
+    tag = "v${mod_version}"
+    repoDir = layout.projectDirectory
+    jars.from(['fabric', 'neoforge'].collect { "$it/build/libs/${mod_id}-$it-${minecraft_version}-${mod_version}.jar" })
+}
