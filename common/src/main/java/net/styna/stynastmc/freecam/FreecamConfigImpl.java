@@ -1,37 +1,38 @@
 package net.styna.stynastmc.freecam;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.styna.stynastmc.config.StynaConfigSpec;
 import net.xolt.freecam.config.ModConfig;
 import net.xolt.freecam.config.model.FlightMode;
 import net.xolt.freecam.config.model.Perspective;
 
 /**
- * Backs the vendored Freecam config interface with a NeoForge config spec.
+ * Backs the vendored Freecam config interface with the shared config spec.
  * Defaults match upstream Freecam.
  */
 public final class FreecamConfigImpl implements ModConfig {
     public static final FreecamConfigImpl INSTANCE = new FreecamConfigImpl();
 
-    public static final ModConfigSpec SPEC;
+    public static final StynaConfigSpec SPEC;
 
-    private static final ModConfigSpec.EnumValue<FlightMode> FLIGHT_MODE;
-    private static final ModConfigSpec.DoubleValue HORIZONTAL_SPEED;
-    private static final ModConfigSpec.DoubleValue VERTICAL_SPEED;
-    private static final ModConfigSpec.BooleanValue IGNORE_ALL_COLLISION;
-    private static final ModConfigSpec.BooleanValue ALWAYS_CHECK_COLLISION;
-    private static final ModConfigSpec.EnumValue<Perspective> PERSPECTIVE;
-    private static final ModConfigSpec.BooleanValue SHOW_PLAYER;
-    private static final ModConfigSpec.BooleanValue SHOW_HAND;
-    private static final ModConfigSpec.BooleanValue FULL_BRIGHT;
-    private static final ModConfigSpec.BooleanValue SHOW_SUBMERSION;
-    private static final ModConfigSpec.BooleanValue OUTLINE_PLAYER;
-    private static final ModConfigSpec.BooleanValue DISABLE_ON_DAMAGE;
-    private static final ModConfigSpec.BooleanValue FREEZE_PLAYER;
-    private static final ModConfigSpec.BooleanValue ALLOW_INTERACT;
-    private static final ModConfigSpec.EnumValue<InteractionMode> INTERACTION_MODE;
-    private static final ModConfigSpec.BooleanValue NOTIFY_FREECAM;
-    private static final ModConfigSpec.BooleanValue NOTIFY_TRIPOD;
+    private static final StynaConfigSpec.EnumValue<FlightMode> FLIGHT_MODE;
+    private static final StynaConfigSpec.DoubleValue HORIZONTAL_SPEED;
+    private static final StynaConfigSpec.DoubleValue VERTICAL_SPEED;
+    private static final StynaConfigSpec.BooleanValue IGNORE_ALL_COLLISION;
+    private static final StynaConfigSpec.BooleanValue ALWAYS_CHECK_COLLISION;
+    private static final StynaConfigSpec.EnumValue<Perspective> PERSPECTIVE;
+    private static final StynaConfigSpec.BooleanValue SHOW_PLAYER;
+    private static final StynaConfigSpec.BooleanValue SHOW_HAND;
+    private static final StynaConfigSpec.BooleanValue FULL_BRIGHT;
+    private static final StynaConfigSpec.BooleanValue SHOW_SUBMERSION;
+    private static final StynaConfigSpec.BooleanValue OUTLINE_PLAYER;
+    private static final StynaConfigSpec.BooleanValue DISABLE_ON_DAMAGE;
+    private static final StynaConfigSpec.BooleanValue FREEZE_PLAYER;
+    private static final StynaConfigSpec.BooleanValue ALLOW_INTERACT;
+    private static final StynaConfigSpec.EnumValue<InteractionMode> INTERACTION_MODE;
+    private static final StynaConfigSpec.BooleanValue NOTIFY_FREECAM;
+    private static final StynaConfigSpec.BooleanValue NOTIFY_TRIPOD;
 
     public enum InteractionMode {
         CAMERA, PLAYER
@@ -41,7 +42,7 @@ public final class FreecamConfigImpl implements ModConfig {
     }
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        StynaConfigSpec.Builder builder = new StynaConfigSpec.Builder();
         builder.push("movement");
         FLIGHT_MODE = builder.comment("CREATIVE keeps vanilla flight feel, DEFAULT uses the freecam flight model.")
                 .defineEnum("flight_mode", FlightMode.DEFAULT);
@@ -50,7 +51,7 @@ public final class FreecamConfigImpl implements ModConfig {
         builder.pop();
 
         builder.push("collision");
-        IGNORE_ALL_COLLISION = builder.comment("Fly through blocks.")
+        IGNORE_ALL_COLLISION = builder.comment("Fly through blocks. Singleplayer only.")
                 .define("ignore_all", true);
         ALWAYS_CHECK_COLLISION = builder.comment("Check collision at the spot freecam starts in.")
                 .define("always_check", false);
@@ -101,17 +102,23 @@ public final class FreecamConfigImpl implements ModConfig {
 
     @Override
     public boolean ignoreAllCollision() {
-        return IGNORE_ALL_COLLISION.get();
+        return IGNORE_ALL_COLLISION.get() && !onRemoteServer();
     }
 
     @Override
     public boolean shouldCheckInitialCollision() {
-        return ALWAYS_CHECK_COLLISION.get();
+        return ALWAYS_CHECK_COLLISION.get() || onRemoteServer();
     }
 
     @Override
     public boolean ignoreCollisionWith(Block block) {
-        return IGNORE_ALL_COLLISION.get();
+        return ignoreAllCollision();
+    }
+
+    // Noclip only allowed in singleplayer/own LAN world
+    private static boolean onRemoteServer() {
+        Minecraft mc = Minecraft.getInstance();
+        return mc.level != null && !mc.hasSingleplayerServer();
     }
 
     @Override

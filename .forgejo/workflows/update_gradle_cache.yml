@@ -1,0 +1,32 @@
+name: Update Gradle Cache
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-cache:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Set up workspace
+        uses: https://data.forgejo.org/actions/checkout@v6
+
+      - name: Set up Java 25
+        uses: https://data.forgejo.org/actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: '25'
+
+      - name: Restore Gradle cache
+        uses: https://data.forgejo.org/actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      - name: Update cache
+        run: |
+          chmod +x gradlew
+          ./gradlew test --build-cache --no-daemon
+

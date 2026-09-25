@@ -1,23 +1,23 @@
 package net.styna.stynastmc.zoom.config;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.styna.stynastmc.config.StynaConfigSpec;
 
 public final class ZoomConfig {
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.DoubleValue DEFAULT_LEVEL;
-    public static final ModConfigSpec.DoubleValue MAX_LEVEL;
-    public static final ModConfigSpec.BooleanValue SCROLL;
-    public static final ModConfigSpec.DoubleValue SCROLL_STEP;
-    public static final ModConfigSpec.BooleanValue SMOOTH;
-    public static final ModConfigSpec.DoubleValue SMOOTH_SPEED;
-    public static final ModConfigSpec.BooleanValue SCALE_SENSITIVITY;
-    public static final ModConfigSpec.BooleanValue CINEMATIC_CAMERA;
+    public static final StynaConfigSpec SPEC;
+    public static final StynaConfigSpec.DoubleValue DEFAULT_LEVEL;
+    public static final StynaConfigSpec.DoubleValue MAX_LEVEL;
+    public static final StynaConfigSpec.BooleanValue SCROLL;
+    public static final StynaConfigSpec.DoubleValue SCROLL_STEP;
+    public static final StynaConfigSpec.BooleanValue SMOOTH;
+    public static final StynaConfigSpec.DoubleValue SMOOTH_SPEED;
+    public static final StynaConfigSpec.BooleanValue SCALE_SENSITIVITY;
+    public static final StynaConfigSpec.BooleanValue CINEMATIC_CAMERA;
 
     private ZoomConfig() {
     }
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        StynaConfigSpec.Builder builder = new StynaConfigSpec.Builder();
         builder.push("general");
         DEFAULT_LEVEL = builder.comment("Zoom level when the key is first pressed.")
                 .defineInRange("default_level", 3.0, 1.0, 50.0);

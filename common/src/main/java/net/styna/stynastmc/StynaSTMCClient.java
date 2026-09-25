@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.styna.stynastmc.config.StynaConfigSpec;
 import net.styna.stynastmc.classicbar.BarHud;
 import net.styna.stynastmc.classicbar.config.ClassicBarConfig;
 import net.styna.stynastmc.clearspam.ClearSpam;
@@ -25,14 +25,15 @@ import net.xolt.freecam.config.ModBindings;
 /** Loader independent client entry point. Loaders forward their events here. */
 public final class StynaSTMCClient {
     /** A client config file, with callbacks for when it is first loaded and when it changes on disk. */
-    public record Config(ModConfigSpec spec, String fileName, Runnable onLoad, Runnable onReload) {
-        private static Config of(ModConfigSpec spec, String name, Runnable onLoad, Runnable onReload) {
+    public record Config(StynaConfigSpec spec, String fileName, Runnable onLoad, Runnable onReload) {
+        private static Config of(StynaConfigSpec spec, String name, Runnable onLoad, Runnable onReload) {
             return new Config(spec, StynaSTMC.MODID + "-" + name + "-client.toml", onLoad, onReload);
         }
     }
 
     private static final Runnable NONE = () -> {
     };
+    private static long lastConfigCheck;
 
     public static final List<Config> CONFIGS = List.of(
             Config.of(ClassicBarConfig.SPEC, "classicbar", BarHud::reload, BarHud::reload),
@@ -63,6 +64,15 @@ public final class StynaSTMCClient {
     }
 
     public static void postTick(Minecraft minecraft) {
+        long now = System.currentTimeMillis();
+        if (now - lastConfigCheck >= 1000) {
+            lastConfigCheck = now;
+            for (Config config : CONFIGS) {
+                if (config.spec().reloadIfModified()) {
+                    config.onReload().run();
+                }
+            }
+        }
         Freecam.postTick(minecraft);
         ConfigKey.tick(minecraft);
         Muffler.tick(minecraft);

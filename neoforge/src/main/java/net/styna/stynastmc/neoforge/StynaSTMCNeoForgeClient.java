@@ -7,8 +7,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.CalculatePlayerTurnEvent;
 import net.neoforged.neoforge.client.event.ClientChatEvent;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
@@ -39,12 +38,11 @@ public final class StynaSTMCNeoForgeClient {
     public StynaSTMCNeoForgeClient(IEventBus modEventBus, ModContainer modContainer) {
         StynaSTMCClient.init();
         for (StynaSTMCClient.Config config : StynaSTMCClient.CONFIGS) {
-            modContainer.registerConfig(ModConfig.Type.CLIENT, config.spec(), config.fileName());
+            config.spec().load(FMLPaths.CONFIGDIR.get().resolve(config.fileName()));
+            config.onLoad().run();
         }
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, (container, parent) -> new StynaConfigScreen(parent));
 
-        modEventBus.addListener((ModConfigEvent.Loading event) -> configEvent(event, true));
-        modEventBus.addListener((ModConfigEvent.Reloading event) -> configEvent(event, false));
         modEventBus.addListener(StynaSTMCNeoForgeClient::registerKeys);
         modEventBus.addListener(StynaSTMCNeoForgeClient::registerLayers);
 
@@ -80,14 +78,6 @@ public final class StynaSTMCNeoForgeClient {
         });
         bus.addListener((ScreenEvent.Init.Post event) -> Muffler.onScreenInit(event.getScreen(), event::addListener));
         bus.addListener((ScreenEvent.Render.Pre event) -> Muffler.onScreenRender(event.getScreen()));
-    }
-
-    private static void configEvent(ModConfigEvent event, boolean loading) {
-        for (StynaSTMCClient.Config config : StynaSTMCClient.CONFIGS) {
-            if (event.getConfig().getSpec() == config.spec()) {
-                (loading ? config.onLoad() : config.onReload()).run();
-            }
-        }
     }
 
     private static void registerKeys(RegisterKeyMappingsEvent event) {

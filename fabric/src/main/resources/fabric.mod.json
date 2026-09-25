@@ -9,7 +9,8 @@
   "environment": "*",
   "entrypoints": {
     "main": ["net.styna.stynastmc.fabric.StynaSTMCFabric"],
-    "client": ["net.styna.stynastmc.fabric.StynaSTMCFabricClient"]
+    "client": ["net.styna.stynastmc.fabric.StynaSTMCFabricClient"],
+    "modmenu": ["net.styna.stynastmc.fabric.StynaSTMCModMenu"]
   },
   "mixins": [
     "${mod_id}.mixins.json",
@@ -23,7 +24,6 @@
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": "*",
-    "forgeconfigapiport": ">=${fcap_version}",
     "minecraft": "${minecraft_version}",
     "java": ">=25"
   }

@@ -2,19 +2,19 @@ package net.styna.stynastmc.clearspam.config;
 
 import java.util.List;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.styna.stynastmc.config.StynaConfigSpec;
 
 public final class ClearSpamConfig {
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.BooleanValue ENABLED;
-    public static final ModConfigSpec.IntValue SPAM_WINDOW_SECONDS;
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> BLOCKED;
+    public static final StynaConfigSpec SPEC;
+    public static final StynaConfigSpec.BooleanValue ENABLED;
+    public static final StynaConfigSpec.IntValue SPAM_WINDOW_SECONDS;
+    public static final StynaConfigSpec.ConfigValue<List<? extends String>> BLOCKED;
 
     private ClearSpamConfig() {
     }
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        StynaConfigSpec.Builder builder = new StynaConfigSpec.Builder();
         builder.push("general");
         ENABLED = builder.comment("Collapse repeated chat messages into one line with a counter.")
                 .define("enabled", true);

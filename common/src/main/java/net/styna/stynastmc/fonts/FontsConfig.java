@@ -1,16 +1,16 @@
 package net.styna.stynastmc.fonts;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.styna.stynastmc.config.StynaConfigSpec;
 
 public final class FontsConfig {
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.BooleanValue ENABLED;
-    public static final ModConfigSpec.ConfigValue<String> FAMILY;
-    public static final ModConfigSpec.ConfigValue<String> VARIANT;
-    public static final ModConfigSpec.DoubleValue SIZE;
-    public static final ModConfigSpec.DoubleValue OVERSAMPLE;
-    public static final ModConfigSpec.DoubleValue SHIFT_X;
-    public static final ModConfigSpec.DoubleValue SHIFT_Y;
+    public static final StynaConfigSpec SPEC;
+    public static final StynaConfigSpec.BooleanValue ENABLED;
+    public static final StynaConfigSpec.ConfigValue<String> FAMILY;
+    public static final StynaConfigSpec.ConfigValue<String> VARIANT;
+    public static final StynaConfigSpec.DoubleValue SIZE;
+    public static final StynaConfigSpec.DoubleValue OVERSAMPLE;
+    public static final StynaConfigSpec.DoubleValue SHIFT_X;
+    public static final StynaConfigSpec.DoubleValue SHIFT_Y;
 
     private FontsConfig() {
     }
@@ -32,7 +32,7 @@ public final class FontsConfig {
     }
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        StynaConfigSpec.Builder builder = new StynaConfigSpec.Builder();
         builder.push("font");
         ENABLED = builder.comment("Replace the default game font with the Google Font below.").define("enabled", false);
         FAMILY = builder.comment("Google Fonts family name, e.g. Roboto.").define("family", "");

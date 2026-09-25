@@ -16,20 +16,20 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.styna.stynastmc.config.StynaConfigSpec;
 import net.styna.stynastmc.classicbar.api.BarOverlay;
 import net.styna.stynastmc.classicbar.api.BarRegistry;
 import net.styna.stynastmc.classicbar.api.BarSide;
 
 /**
- * Every bar setting lives here so the NeoForge config screen can edit it.
+ * Every bar setting lives here so the shared config screen can edit it.
  * The spec is generated from each bar's codec output, and {@link #readBar} rebuilds that JSON for decoding.
  */
 public final class ClassicBarConfig {
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.BooleanValue ENABLED;
-    public static final ModConfigSpec.DoubleValue TRANSITION_SPEED;
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> PRIORITY;
+    public static final StynaConfigSpec SPEC;
+    public static final StynaConfigSpec.BooleanValue ENABLED;
+    public static final StynaConfigSpec.DoubleValue TRANSITION_SPEED;
+    public static final StynaConfigSpec.ConfigValue<List<? extends String>> PRIORITY;
 
     private static final Pattern COLOR = Pattern.compile("#?[0-9a-fA-F]{6}");
     private static final Pattern STOP = Pattern.compile("\\s*\\d*\\.?\\d+\\s*=\\s*#?[0-9a-fA-F]{6}\\s*");
@@ -53,7 +53,7 @@ public final class ClassicBarConfig {
             Map.entry("color", "Bar color."));
 
     private static final Map<String, Node> BARS = new LinkedHashMap<>();
-    private static final List<ModConfigSpec.ConfigValue<?>> VALUES = new ArrayList<>();
+    private static final List<StynaConfigSpec.ConfigValue<?>> VALUES = new ArrayList<>();
 
     private ClassicBarConfig() {
     }
@@ -73,11 +73,11 @@ public final class ClassicBarConfig {
         SPEC.save();
     }
 
-    private static <T> void reset(ModConfigSpec.ConfigValue<T> value) {
+    private static <T> void reset(StynaConfigSpec.ConfigValue<T> value) {
         value.set(value.getDefault());
     }
 
-    private static <T extends ModConfigSpec.ConfigValue<?>> T track(T value) {
+    private static <T extends StynaConfigSpec.ConfigValue<?>> T track(T value) {
         VALUES.add(value);
         return value;
     }
@@ -87,7 +87,7 @@ public final class ClassicBarConfig {
         return ((Codec<BarOverlay>) bar.codec()).encodeStart(JsonOps.INSTANCE, bar).getOrThrow().getAsJsonObject();
     }
 
-    private static Node defineBar(ModConfigSpec.Builder builder, JsonObject json) {
+    private static Node defineBar(StynaConfigSpec.Builder builder, JsonObject json) {
         Map<String, Node> fields = new LinkedHashMap<>();
         for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
             // Flatten bar_settings so side/enabled/etc. sit directly in the bar's section.
@@ -98,7 +98,7 @@ public final class ClassicBarConfig {
         return () -> build(fields);
     }
 
-    private static Node defineFields(ModConfigSpec.Builder builder, JsonObject json) {
+    private static Node defineFields(StynaConfigSpec.Builder builder, JsonObject json) {
         Map<String, Node> fields = new LinkedHashMap<>();
         for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
             fields.put(entry.getKey(), define(builder, entry.getKey(), entry.getValue()));
@@ -112,7 +112,7 @@ public final class ClassicBarConfig {
         return object;
     }
 
-    private static Node define(ModConfigSpec.Builder builder, String key, JsonElement value) {
+    private static Node define(StynaConfigSpec.Builder builder, String key, JsonElement value) {
         if (key.equals("disables_overlay") || key.equals("type")) {
             return () -> value;
         }
@@ -123,25 +123,25 @@ public final class ClassicBarConfig {
             return node;
         }
         if (key.equals("side")) {
-            ModConfigSpec.EnumValue<BarSide> side = track(comment(builder, key)
+            StynaConfigSpec.EnumValue<BarSide> side = track(comment(builder, key)
                     .defineEnum(key, BarSide.valueOf(value.getAsString().toUpperCase(Locale.ROOT))));
             return () -> new JsonPrimitive(side.get().getSerializedName());
         }
         if (value instanceof JsonPrimitive primitive) {
             if (primitive.isBoolean()) {
-                ModConfigSpec.BooleanValue bool = track(comment(builder, key).define(key, primitive.getAsBoolean()));
+                StynaConfigSpec.BooleanValue bool = track(comment(builder, key).define(key, primitive.getAsBoolean()));
                 return () -> new JsonPrimitive(bool.get());
             }
             if (primitive.isString()) {
                 String s = primitive.getAsString();
-                ModConfigSpec.ConfigValue<String> string = track(comment(builder, key)
+                StynaConfigSpec.ConfigValue<String> string = track(comment(builder, key)
                         .define(key, s, IS_COLOR.test(s) ? IS_COLOR : String.class::isInstance));
                 return () -> new JsonPrimitive(string.get());
             }
         }
         if (value instanceof JsonArray array) {
             List<String> defaults = array.asList().stream().map(JsonElement::getAsString).toList();
-            ModConfigSpec.ConfigValue<List<? extends String>> list = track(comment(builder, key)
+            StynaConfigSpec.ConfigValue<List<? extends String>> list = track(comment(builder, key)
                     .defineList(key, () -> defaults, () -> "#FFFFFF", IS_COLOR));
             return () -> {
                 JsonArray out = new JsonArray();
@@ -151,7 +151,7 @@ public final class ClassicBarConfig {
         }
         if (value instanceof JsonObject object && isGradient(object)) {
             List<String> defaults = object.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue().getAsString()).toList();
-            ModConfigSpec.ConfigValue<List<? extends String>> list = track(builder
+            StynaConfigSpec.ConfigValue<List<? extends String>> list = track(builder
                     .comment("Gradient stops as fraction=color. The bar blends between them, e.g. 0.25=#FF0000.")
                     .defineList(key, () -> defaults, () -> "0.5=#FFFFFF", IS_STOP));
             return () -> readGradient(list.get());
@@ -165,7 +165,7 @@ public final class ClassicBarConfig {
         return () -> value;
     }
 
-    private static ModConfigSpec.Builder comment(ModConfigSpec.Builder builder, String key) {
+    private static StynaConfigSpec.Builder comment(StynaConfigSpec.Builder builder, String key) {
         String comment = COMMENTS.get(key);
         return comment == null ? builder : builder.comment(comment);
     }
@@ -184,7 +184,7 @@ public final class ClassicBarConfig {
     }
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        StynaConfigSpec.Builder builder = new StynaConfigSpec.Builder();
         builder.push("general");
         ENABLED = track(builder.comment("Master switch. When false the vanilla status icons are used instead.")
                 .define("enabled", true));

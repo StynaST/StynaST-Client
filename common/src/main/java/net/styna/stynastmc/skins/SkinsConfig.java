@@ -1,15 +1,15 @@
 package net.styna.stynastmc.skins;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.styna.stynastmc.config.StynaConfigSpec;
 
 public final class SkinsConfig {
-    public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.BooleanValue ENABLED;
-    public static final ModConfigSpec.ConfigValue<String> DIRECTORY;
-    public static final ModConfigSpec.ConfigValue<String> SKIN;
-    public static final ModConfigSpec.EnumValue<SkinModel> MODEL;
-    public static final ModConfigSpec.ConfigValue<String> SERVICE_URL;
-    public static final ModConfigSpec.ConfigValue<String> DEV_TOKEN;
+    public static final StynaConfigSpec SPEC;
+    public static final StynaConfigSpec.BooleanValue ENABLED;
+    public static final StynaConfigSpec.ConfigValue<String> DIRECTORY;
+    public static final StynaConfigSpec.ConfigValue<String> SKIN;
+    public static final StynaConfigSpec.EnumValue<SkinModel> MODEL;
+    public static final StynaConfigSpec.ConfigValue<String> SERVICE_URL;
+    public static final StynaConfigSpec.ConfigValue<String> DEV_TOKEN;
 
     private SkinsConfig() {
     }
@@ -23,7 +23,7 @@ public final class SkinsConfig {
     }
 
     static {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+        StynaConfigSpec.Builder builder = new StynaConfigSpec.Builder();
         builder.push("skins");
         ENABLED = builder.comment("Render your own player with the skin picked in the Skin tab.").define("enabled", true);
         DIRECTORY = builder.comment("Folder holding skin PNGs. 64x64 and HD multiples of it (128, 256, 512) are accepted.")

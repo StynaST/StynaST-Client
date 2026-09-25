@@ -1,0 +1,107 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - '26.2'
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Set up workspace
+        uses: https://data.forgejo.org/actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java 25
+        uses: https://data.forgejo.org/actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: '25'
+
+      - name: Restore Gradle cache
+        uses: https://data.forgejo.org/actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon
+
+      - name: Prepare release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "$FORGEJO_REF" == refs/tags/* ]]; then
+            RELEASE_TAG="$FORGEJO_REF_NAME"
+          else
+            VERSION=$(sed -nE 's/^(mod_version|modVersion)[[:space:]]*=[[:space:]]*([^[:space:]]+).*/\2/p' gradle.properties | head -n 1)
+            if [[ -z "$VERSION" ]]; then
+              VERSION_FILE=$(sed -n 's/^modPropertiesJavaFile=//p' gradle.properties)
+              VERSION=$(sed -nE 's/.*public static final String VERSION = "([^"]+)".*/\1/p' "$VERSION_FILE" | head -n 1)
+            fi
+            RELEASE_TAG="v${VERSION#v}"
+          fi
+
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+(\.[0-9]+){2,}$ ]]; then
+            echo "Invalid release tag: $RELEASE_TAG" >&2
+            exit 1
+          fi
+
+          mkdir -p dist/release
+          found=false
+          for artifact in fabric/build/libs/*.jar neoforge/build/libs/*.jar; do
+            [[ -e "$artifact" ]] || continue
+            case "$(basename "$artifact")" in
+              *-dev-*.jar|*-sources.jar|*-api.jar|*-deobf.jar)
+                continue
+                ;;
+            esac
+            cp "$artifact" dist/release/
+            found=true
+          done
+          if [[ "$found" != true ]]; then
+            echo 'No distributable JARs found in fabric/neoforge build/libs' >&2
+            exit 1
+          fi
+
+          BASE_SHA=''
+          if [[ "$FORGEJO_REF" == refs/heads/* ]]; then
+            BASE_SHA='${{ forgejo.event.before }}'
+          fi
+
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ || "$BASE_SHA" == "$FORGEJO_SHA" ]]; then
+            BASE_SHA=$(git rev-parse "$FORGEJO_SHA^" 2>/dev/null || true)
+          fi
+
+          if [[ -n "$BASE_SHA" ]]; then
+            printf '[Compare changes](%s/%s/compare/%s...%s)\n' \
+              "$FORGEJO_SERVER_URL" "$FORGEJO_REPOSITORY" "$BASE_SHA" "$FORGEJO_SHA" \
+              > dist/release-notes.md
+          else
+            printf '[Built from commit %s](%s/%s/commit/%s)\n' \
+              "$FORGEJO_SHA" "$FORGEJO_SERVER_URL" "$FORGEJO_REPOSITORY" "$FORGEJO_SHA" \
+              > dist/release-notes.md
+          fi
+
+          echo "RELEASE_TAG=$RELEASE_TAG" >> "$FORGEJO_ENV"
+
+      - name: Publish Forgejo release
+        uses: https://code.forgejo.org/actions/forgejo-release@v2.13.4
+        with:
+          direction: upload
+          token: ${{ secrets.RELEASE_TOKEN }}
+          tag: ${{ env.RELEASE_TAG }}
+          sha: ${{ forgejo.sha }}
+          url: https://code.styna.net/
+          repo: Minecraft/StynaST-Client
+          release-dir: dist/release
+          release-notes-file: dist/release-notes.md
+          override: true

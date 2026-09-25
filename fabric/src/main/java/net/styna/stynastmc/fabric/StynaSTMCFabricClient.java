@@ -2,10 +2,8 @@ package net.styna.stynastmc.fabric;
 
 import java.util.Map;
 
-import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
-import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
-import fuzs.forgeconfigapiport.fabric.api.v5.client.ConfigScreenFactoryRegistry;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -19,8 +17,6 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
-import net.neoforged.fml.config.ModConfig;
-import net.styna.stynastmc.StynaSTMC;
 import net.styna.stynastmc.StynaSTMCClient;
 import net.styna.stynastmc.classicbar.BarHud;
 import net.styna.stynastmc.classicbar.ClassicBar;
@@ -30,7 +26,6 @@ import net.styna.stynastmc.classicbar.network.ClassicBarNetwork;
 import net.styna.stynastmc.classicbar.network.ExhaustionSyncPayload;
 import net.styna.stynastmc.clearspam.ClearSpam;
 import net.styna.stynastmc.config.ConfigKey;
-import net.styna.stynastmc.config.StynaConfigScreen;
 import net.styna.stynastmc.muffler.Muffler;
 
 public final class StynaSTMCFabricClient implements ClientModInitializer {
@@ -50,13 +45,10 @@ public final class StynaSTMCFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         StynaSTMCClient.init();
-        // Listeners first: FCAP may load client configs as soon as they are registered.
-        ModConfigEvents.loading(StynaSTMC.MODID).register(config -> configEvent(config, true));
-        ModConfigEvents.reloading(StynaSTMC.MODID).register(config -> configEvent(config, false));
         for (StynaSTMCClient.Config config : StynaSTMCClient.CONFIGS) {
-            ConfigRegistry.INSTANCE.register(StynaSTMC.MODID, ModConfig.Type.CLIENT, config.spec(), config.fileName());
+            config.spec().load(FabricLoader.getInstance().getConfigDir().resolve(config.fileName()));
+            config.onLoad().run();
         }
-        ConfigScreenFactoryRegistry.INSTANCE.register(StynaSTMC.MODID, (modId, parent) -> new StynaConfigScreen(parent));
 
         KeyMapping.Category.register(ConfigKey.CATEGORY.id());
         StynaSTMCClient.keyMappings().forEach(KeyMappingHelper::registerKeyMapping);
@@ -76,14 +68,6 @@ public final class StynaSTMCFabricClient implements ClientModInitializer {
             ClassicBarNetwork.presentOnServer = true;
         });
         registerHud();
-    }
-
-    private static void configEvent(ModConfig modConfig, boolean loading) {
-        for (StynaSTMCClient.Config config : StynaSTMCClient.CONFIGS) {
-            if (modConfig.getSpec() == config.spec()) {
-                (loading ? config.onLoad() : config.onReload()).run();
-            }
-        }
     }
 
     private static void registerHud() {

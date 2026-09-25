@@ -7,13 +7,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-import com.electronwill.nightconfig.core.UnmodifiableConfig;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.styna.stynastmc.config.StynaConfigSpec;
 import net.styna.stynastmc.StynaSTMC;
 import net.styna.stynastmc.ui.Ui;
 import net.styna.stynastmc.ui.UiElement;
@@ -21,7 +19,7 @@ import net.styna.stynastmc.ui.UiPanel;
 import net.styna.stynastmc.ui.UiWidgets;
 
 /**
- * Editor for any {@link ModConfigSpec}: sections on the left, the selected section's values on the right.
+ * Editor for any {@link StynaConfigSpec}: sections on the left, the selected section's values on the right.
  * Edits apply immediately; the file is written when leaving the tab.
  */
 public class ConfigTab implements Tab {
@@ -31,7 +29,7 @@ public class ConfigTab implements Tab {
     private static final int NAV_ITEM = 14;
 
     private final Component title;
-    private final ModConfigSpec spec;
+    private final StynaConfigSpec spec;
     private final Runnable onChange;
     private final List<Section> sections = new ArrayList<>();
     private int selected;
@@ -40,10 +38,10 @@ public class ConfigTab implements Tab {
     private UiPanel content;
 
     /** A config section. Header sections only group their children and hold no values. */
-    private record Section(List<String> path, List<ModConfigSpec.ConfigValue<?>> values) {
+    private record Section(List<String> path, List<StynaConfigSpec.ConfigValue<?>> values) {
     }
 
-    public ConfigTab(Component title, ModConfigSpec spec, Runnable onChange) {
+    public ConfigTab(Component title, StynaConfigSpec spec, Runnable onChange) {
         this.title = title;
         this.spec = spec;
         this.onChange = onChange;
@@ -54,21 +52,23 @@ public class ConfigTab implements Tab {
         return title;
     }
 
-    private void collect(UnmodifiableConfig config, List<String> path) {
-        List<ModConfigSpec.ConfigValue<?>> values = new ArrayList<>();
-        List<Map.Entry<String, UnmodifiableConfig>> subsections = new ArrayList<>();
-        for (UnmodifiableConfig.Entry entry : config.entrySet()) {
+    private void collect(Map<String, Object> config, List<String> path) {
+        List<StynaConfigSpec.ConfigValue<?>> values = new ArrayList<>();
+        List<Map.Entry<String, Map<String, Object>>> subsections = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : config.entrySet()) {
             Object value = entry.getValue();
-            if (value instanceof ModConfigSpec.ConfigValue<?> configValue) {
+            if (value instanceof StynaConfigSpec.ConfigValue<?> configValue) {
                 values.add(configValue);
-            } else if (value instanceof UnmodifiableConfig sub) {
-                subsections.add(Map.entry(entry.getKey(), sub));
+            } else if (value instanceof Map<?, ?> sub) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> nested = (Map<String, Object>) sub;
+                subsections.add(Map.entry(entry.getKey(), nested));
             }
         }
         if (!path.isEmpty()) {
             sections.add(new Section(path, values));
         }
-        for (Map.Entry<String, UnmodifiableConfig> sub : subsections) {
+        for (Map.Entry<String, Map<String, Object>> sub : subsections) {
             List<String> subPath = new ArrayList<>(path);
             subPath.add(sub.getKey());
             collect(sub.getValue(), subPath);
@@ -174,18 +174,18 @@ public class ConfigTab implements Tab {
             note.wrap = true;
             content.place(note, note.wrappedHeight(content.width - 26), 6);
         }
-        for (ModConfigSpec.ConfigValue<?> value : section.values()) {
+        for (StynaConfigSpec.ConfigValue<?> value : section.values()) {
             buildValue(value);
         }
     }
 
-    private ModConfigSpec.ValueSpec valueSpec(ModConfigSpec.ConfigValue<?> value) {
-        return spec.getSpec().get(value.getPath());
+    private StynaConfigSpec.ValueSpec valueSpec(StynaConfigSpec.ConfigValue<?> value) {
+        return spec.valueSpec(value.getPath());
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void buildValue(ModConfigSpec.ConfigValue<?> value) {
-        ModConfigSpec.ValueSpec valueSpec = valueSpec(value);
+    private void buildValue(StynaConfigSpec.ConfigValue<?> value) {
+        StynaConfigSpec.ValueSpec valueSpec = valueSpec(value);
         String key = value.getPath().getLast();
         UiWidgets.Row row = content.place(new UiWidgets.Row(label(key)), ROW_HEIGHT, Ui.GAP);
         row.tooltip = () -> tooltip(value, valueSpec);
@@ -194,7 +194,7 @@ public class ConfigTab implements Tab {
 
         if (!current.equals(value.getDefault())) {
             UiWidgets.Button reset = row.add(new UiWidgets.Button(Component.literal("⟲"), () -> {
-                set((ModConfigSpec.ConfigValue) value, value.getDefault());
+                set((StynaConfigSpec.ConfigValue) value, value.getDefault());
                 rebuild();
             }));
             reset.bounds(right - 14, row.y + 3, 14, 14);
@@ -203,13 +203,13 @@ public class ConfigTab implements Tab {
         }
 
         if (current instanceof Boolean bool) {
-            row.add(new UiWidgets.Toggle(bool, v -> set((ModConfigSpec.ConfigValue) value, v))).bounds(right - 26, row.y + 3, 26, 14);
+            row.add(new UiWidgets.Toggle(bool, v -> set((StynaConfigSpec.ConfigValue) value, v))).bounds(right - 26, row.y + 3, 26, 14);
         } else if (current instanceof Enum<?> e) {
             Object[] constants = e.getDeclaringClass().getEnumConstants();
             UiWidgets.Button cycle = row.add(new UiWidgets.Button(() -> Component.literal(value.get().toString()), null));
             cycle.onPressButton = mouse -> {
                 int index = ((Enum<?>) value.get()).ordinal() + (mouse == 1 ? constants.length - 1 : 1);
-                set((ModConfigSpec.ConfigValue) value, constants[index % constants.length]);
+                set((StynaConfigSpec.ConfigValue) value, constants[index % constants.length]);
             };
             cycle.bounds(right - 100, row.y + 2, 100, 16);
         } else if (current instanceof Number) {
@@ -222,20 +222,20 @@ public class ConfigTab implements Tab {
                     return false;
                 }
             };
-            field.onChange = s -> set((ModConfigSpec.ConfigValue) value, parse.apply(s.trim()));
+            field.onChange = s -> set((StynaConfigSpec.ConfigValue) value, parse.apply(s.trim()));
             field.bounds(right - 100, row.y + 2, 100, 16);
         } else if (current instanceof String s) {
             UiWidgets.TextField field = row.add(new UiWidgets.TextField(s));
             field.validator = valueSpec::test;
             field.onChange = v -> {
-                set((ModConfigSpec.ConfigValue) value, v);
+                set((StynaConfigSpec.ConfigValue) value, v);
                 field.swatch = swatch(v);
             };
             field.swatch = swatch(s);
             int w = Math.min(160, row.width / 2);
             field.bounds(right - w, row.y + 2, w, 16);
         } else if (current instanceof List<?> list) {
-            buildList((ModConfigSpec.ConfigValue<List<? extends String>>) (ModConfigSpec.ConfigValue) value, valueSpec, row, right,
+            buildList((StynaConfigSpec.ConfigValue<List<? extends String>>) (StynaConfigSpec.ConfigValue) value, valueSpec, row, right,
                     (List<String>) list);
         } else {
             UiWidgets.Label shown = row.add(new UiWidgets.Label(Component.literal(String.valueOf(current)), Ui.MUTED));
@@ -244,7 +244,7 @@ public class ConfigTab implements Tab {
         }
     }
 
-    private void buildList(ModConfigSpec.ConfigValue<List<? extends String>> value, ModConfigSpec.ValueSpec valueSpec, UiWidgets.Row row, int right,
+    private void buildList(StynaConfigSpec.ConfigValue<List<? extends String>> value, StynaConfigSpec.ValueSpec valueSpec, UiWidgets.Row row, int right,
             List<String> items) {
         UiWidgets.Button add = row.add(new UiWidgets.Button(Component.literal("+"), () -> {
             List<String> next = new ArrayList<>(items);
@@ -291,7 +291,7 @@ public class ConfigTab implements Tab {
         content.reserve(0, 3);
     }
 
-    private <T> void set(ModConfigSpec.ConfigValue<T> value, T newValue) {
+    private <T> void set(StynaConfigSpec.ConfigValue<T> value, T newValue) {
         value.set(newValue);
         dirty = true;
         onChange.run();
@@ -331,13 +331,13 @@ public class ConfigTab implements Tab {
         return hex == null ? null : Integer.parseUnsignedInt(hex.startsWith("#") ? hex.substring(1) : hex, 16);
     }
 
-    private static Component tooltip(ModConfigSpec.ConfigValue<?> value, ModConfigSpec.ValueSpec valueSpec) {
+    private static Component tooltip(StynaConfigSpec.ConfigValue<?> value, StynaConfigSpec.ValueSpec valueSpec) {
         var text = Component.empty().append(label(value.getPath().getLast()).copy().withStyle(s -> s.withBold(true)));
         String comment = valueSpec.getComment();
         if (comment != null && !comment.isBlank()) {
             text.append("\n").append(Component.literal(comment));
         }
-        ModConfigSpec.Range<?> range = valueSpec.getRange();
+        StynaConfigSpec.Range<?> range = valueSpec.getRange();
         if (range != null) {
             text.append("\n").append(Component.translatable("stynastmc.ui.range", range.getMin(), range.getMax()).withStyle(s -> s.withColor(0x55FF55)));
         }
