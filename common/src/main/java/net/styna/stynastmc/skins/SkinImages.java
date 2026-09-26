@@ -20,6 +20,8 @@ import net.styna.stynastmc.StynaSTMC;
  */
 public final class SkinImages {
     private static final int UNIT = 64;
+    // Matches the service cap; anything larger is rejected before it reaches the GPU.
+    public static final int MAX_WIDTH = 1024;
 
     private SkinImages() {
     }
@@ -29,7 +31,7 @@ public final class SkinImages {
     }
 
     public static boolean isSupported(int width, int height) {
-        return width >= UNIT && width % UNIT == 0 && (height == width || height * 2 == width);
+        return width >= UNIT && width <= MAX_WIDTH && width % UNIT == 0 && (height == width || height * 2 == width);
     }
 
     public static Loaded load(Path file) throws IOException {

@@ -8,11 +8,9 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -34,7 +32,6 @@ import net.styna.stynastmc.StynaSTMC;
  */
 public final class SkinService {
     private static final HttpClient HTTP = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
-    private static final SecureRandom RANDOM = new SecureRandom();
     private static final Duration TIMEOUT = Duration.ofSeconds(20);
     private static final long TOKEN_MARGIN_MS = 60_000;
     private static final long SIGN_IN_RETRY_MS = 5 * 60 * 1000;
@@ -103,9 +100,7 @@ public final class SkinService {
 
         String devToken = SkinsConfig.DEV_TOKEN.get().trim();
         if (devToken.isEmpty()) {
-            byte[] random = new byte[16];
-            RANDOM.nextBytes(random);
-            String serverId = HexFormat.of().formatHex(random);
+            String serverId = challenge();
             try {
                 Minecraft.getInstance().services().sessionService().joinServer(user.getProfileId(), user.getAccessToken(), serverId);
             } catch (InvalidCredentialsException e) {
@@ -134,6 +129,19 @@ public final class SkinService {
             tokenExpiresAt = json.get("expiresAt").getAsLong();
             return token;
         }
+    }
+
+    /** The service hands out the serverId, so a Minecraft server we join cannot replay our handshake to it. */
+    private static String challenge() {
+        HttpRequest request = HttpRequest.newBuilder(uri("/api/minecraft/skins/challenge"))
+                .timeout(TIMEOUT)
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            throw new CompletionException(new IOException("Sign in failed: " + errorOf(response)));
+        }
+        return JsonParser.parseString(response.body()).getAsJsonObject().get("serverId").getAsString();
     }
 
     public static CompletableFuture<Void> upload(Path file, SkinModel model) {
