@@ -48,7 +48,8 @@ abstract class PublishForgejoRelease extends DefaultTask {
         def releaseId = new JsonSlurper().parseText(created.body()).id
         logger.lifecycle("Created release $tagName at $sha")
 
-        jars.files.each { jar ->
+        // Plain loop: closures cannot reach private methods on Gradle's decorated task subclass.
+        for (File jar : jars.files) {
             if (!jar.exists()) throw new GradleException("Missing jar: $jar")
             uploadAsset(token, "$api/releases/$releaseId/assets?name=${URLEncoder.encode(jar.name, 'UTF-8')}", jar)
             logger.lifecycle("Uploaded ${jar.name}")
