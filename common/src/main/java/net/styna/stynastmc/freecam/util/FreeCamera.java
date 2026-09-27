@@ -19,6 +19,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.world.entity.MoveSimulationType;
 import net.minecraft.client.player.ClientInput;
 import net.minecraft.core.Holder;
 
@@ -142,8 +143,18 @@ public class FreeCamera extends AbstractClientPlayer {
 
     // Needed for hand swings to be shown in freecam since the player is replaced by FreeCamera in HeldItemRenderer.renderItem()
     @Override
-    public float getAttackAnim(float tickDelta) {
-        return MC.player.getAttackAnim(tickDelta);
+    public @Nullable SwingDescription getCurrentSwing() {
+        return MC.player.getCurrentSwing();
+    }
+
+    @Override
+    public float getSwingAnimation(final float partialTicks) {
+        return MC.player.getSwingAnimation(partialTicks);
+    }
+
+    @Override
+    public boolean isSwinging() {
+        return MC.player.isSwinging();
     }
 
     // Needed for item use animations to be shown in freecam since the player is replaced by FreeCamera in HeldItemRenderer.renderItem()
@@ -180,7 +191,7 @@ public class FreeCamera extends AbstractClientPlayer {
     @Override
     public @NotNull PushReaction getPistonPushReaction() {
         if (ModConfig.get().ignoreAllCollision()) {
-            return PushReaction.IGNORE;
+            return PushReaction.IGNORE_ENTITY;
         }
         return super.getPistonPushReaction();
     }
@@ -245,8 +256,8 @@ public class FreeCamera extends AbstractClientPlayer {
 
     // Enabling movement ticking
     @Override
-    public boolean canSimulateMovement() {
-        return true;
+    public @NotNull MoveSimulationType getMoveSimulationType() {
+        return MoveSimulationType.SERVER_AND_CLIENT;
     }
 
     @Override

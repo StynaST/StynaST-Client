@@ -5,6 +5,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 
+import com.mojang.blaze3d.Blaze3D;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.model.Model;
@@ -15,7 +17,6 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.styna.stynastmc.config.StynaConfigScreen;
 import net.styna.stynastmc.skins.CustomSkins;
@@ -172,7 +173,7 @@ public class SkinTab implements Tab {
     private void openFolder() {
         Path dir = CustomSkins.directory();
         if (dir != null && Files.isDirectory(dir)) {
-            Util.getPlatform().openPath(dir);
+            Blaze3D.openPath(dir);
         }
     }
 

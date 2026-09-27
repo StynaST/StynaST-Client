@@ -24,6 +24,7 @@ public class EntityRenderDispatcherMixin {
         double camX,
         double camY,
         double camZ,
+        float partialTicks,
         CallbackInfoReturnable<Boolean> cir)
     {
         if (entity instanceof FreeCamera) {

@@ -40,15 +40,15 @@ public class Health extends BarOverlayImpl {
         double health = player.getHealth();
         double barWidth = getBarWidth(player);
         boolean highlight = healthUpdateCounter > updateCounter && (healthUpdateCounter - updateCounter) / 3L % 2L == 1L;
-        if (health < playerHealth && player.invulnerableTime > 0) {
+        if (health < playerHealth && player.getInvulnerableTime() > 0) {
             healthUpdateCounter = updateCounter + 20;
             lastPlayerHealth = playerHealth;
-        } else if (health > playerHealth && player.invulnerableTime > 0) {
+        } else if (health > playerHealth && player.getInvulnerableTime() > 0) {
             healthUpdateCounter = updateCounter + 10;
         }
 
         playerHealth = health;
-        double displayHealth = health + (lastPlayerHealth - health) * (player.invulnerableTime / 20.0);
+        double displayHealth = health + (lastPlayerHealth - health) * (player.getInvulnerableTime() / 20.0);
         int xStart = screenWidth / 2 + getHOffset();
         int yStart = screenHeight - vOffset;
         if (displayHealth > health) {

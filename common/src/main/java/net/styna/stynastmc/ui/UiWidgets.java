@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -279,31 +279,31 @@ public final class UiWidgets {
         @Override
         public boolean keyPressed(KeyEvent event) {
             switch (event.key()) {
-                case GLFW.GLFW_KEY_BACKSPACE -> {
+                case InputConstants.KEY_BACKSPACE -> {
                     if (cursor > 0) {
                         edit(text.substring(0, cursor - 1) + text.substring(cursor), cursor - 1);
                     }
                 }
-                case GLFW.GLFW_KEY_DELETE -> {
+                case InputConstants.KEY_DELETE -> {
                     if (cursor < text.length()) {
                         edit(text.substring(0, cursor) + text.substring(cursor + 1), cursor);
                     }
                 }
-                case GLFW.GLFW_KEY_LEFT -> cursor = Math.max(0, cursor - 1);
-                case GLFW.GLFW_KEY_RIGHT -> cursor = Math.min(text.length(), cursor + 1);
-                case GLFW.GLFW_KEY_HOME -> cursor = 0;
-                case GLFW.GLFW_KEY_END -> cursor = text.length();
-                case GLFW.GLFW_KEY_ENTER, GLFW.GLFW_KEY_KP_ENTER, GLFW.GLFW_KEY_ESCAPE -> {
+                case InputConstants.KEY_LEFT -> cursor = Math.max(0, cursor - 1);
+                case InputConstants.KEY_RIGHT -> cursor = Math.min(text.length(), cursor + 1);
+                case InputConstants.KEY_HOME -> cursor = 0;
+                case InputConstants.KEY_END -> cursor = text.length();
+                case InputConstants.KEY_RETURN, InputConstants.KEY_NUMPADENTER, InputConstants.KEY_ESCAPE -> {
                     UiScreen screen = screen();
                     if (screen != null) {
                         screen.setFocus(null);
                     }
                 }
                 default -> {
-                    if (event.hasControlDown() && event.key() == GLFW.GLFW_KEY_V) {
+                    if (event.isPaste()) {
                         String paste = Minecraft.getInstance().keyboardHandler.getClipboard().replaceAll("[\\r\\n]", "");
                         edit(text.substring(0, cursor) + paste + text.substring(cursor), cursor + paste.length());
-                    } else if (event.hasControlDown() && event.key() == GLFW.GLFW_KEY_A) {
+                    } else if (event.isSelectAll()) {
                         edit("", 0);
                     } else {
                         return false;

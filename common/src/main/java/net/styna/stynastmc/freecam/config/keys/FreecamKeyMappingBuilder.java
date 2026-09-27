@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 public class FreecamKeyMappingBuilder {
     private final String translationKey;
-    private InputConstants.Type type = InputConstants.Type.KEYSYM;
+    private InputConstants.Type type = InputConstants.Type.KEYBOARD;
     private int keyCode = InputConstants.UNKNOWN.getValue();
     private Runnable action;
     private HoldAction holdAction;

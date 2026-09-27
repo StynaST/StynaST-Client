@@ -1,9 +1,10 @@
 package net.styna.stynastmc.config.tabs;
 
+import com.mojang.blaze3d.Blaze3D;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 import net.styna.stynastmc.StynaSTMC;
 import net.styna.stynastmc.classicbar.config.ClassicBarConfig;
 import net.styna.stynastmc.clearspam.config.ClearSpamConfig;
@@ -53,7 +54,7 @@ public class HomeTab implements Tab {
         qx = quickButton(quick, qx, Identifier.withDefaultNamespace("spectator/teleport_to_player"), Component.translatable("stynastmc.ui.skin"), 4);
         qx = quickButton(quick, qx, Identifier.withDefaultNamespace("icon/search"), Component.translatable("stynastmc.configuration.zoom"), 5);
         qx = quickButton(quick, qx, Identifier.withDefaultNamespace("icon/music_notes"), Component.translatable("stynastmc.ui.muffler"), StynaConfigScreen.MUFFLER_TAB);
-        UiWidgets.Button folder = quick.add(new UiWidgets.Button(Component.empty(), () -> Util.getPlatform().openPath(GoogleFonts.DIR.getParent()))
+        UiWidgets.Button folder = quick.add(new UiWidgets.Button(Component.empty(), () -> Blaze3D.openPath(GoogleFonts.DIR.getParent()))
                 .icon(Ui.FOLDER));
         folder.bounds(qx, quick.y + 5, 30, 30);
         folder.tooltip(Component.translatable("stynastmc.ui.open_folder"));
