@@ -19,6 +19,7 @@
     "${mod_id}.zoom.mixins.json",
     "${mod_id}.muffler.mixins.json",
     "${mod_id}.chat.mixins.json",
+    "${mod_id}.tweaks.mixins.json",
     "${mod_id}.fabric.mixins.json"
   ],
   "accessWidener": "${mod_id}.classtweaker",

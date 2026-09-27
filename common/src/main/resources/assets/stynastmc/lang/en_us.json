@@ -174,5 +174,20 @@
   "stynastmc.ui.muffler.delete": "Delete",
   "stynastmc.ui.muffler.play": "Play",
   "stynastmc.ui.muffler.muffle": "Muffle",
-  "stynastmc.ui.muffler.volume": "Volume while muffled"
+  "stynastmc.ui.muffler.volume": "Volume while muffled",
+  "stynastmc.configuration.tweaks": "Tweaks",
+  "stynastmc.configuration.hud": "HUD",
+  "stynastmc.configuration.world": "World",
+  "stynastmc.configuration.screens": "Screens",
+  "stynastmc.configuration.armor_hud": "Armor HUD",
+  "stynastmc.configuration.durability_tooltip": "Durability tooltip",
+  "stynastmc.configuration.no_fog": "No fog",
+  "stynastmc.configuration.keybind_search": "Key bind search",
+  "stynastmc.tooltip.durability": "Durability: %s / %s",
+  "stynastmc.keybinds.search": "Search key binds...",
+  "stynastmc.keybinds.show": "Show",
+  "stynastmc.keybinds.filter.all": "All",
+  "stynastmc.keybinds.filter.conflicts": "Conflicts",
+  "stynastmc.keybinds.filter.unbound": "Unbound",
+  "stynastmc.keybinds.filter.changed": "Changed"
 }

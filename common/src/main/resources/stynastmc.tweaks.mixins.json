@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.styna.stynastmc.tweaks.mixin",
+  "client": [
+    "FogRendererMixin",
+    "HudMixin",
+    "ItemStackMixin",
+    "KeyBindsListMixin",
+    "KeyBindsScreenMixin",
+    "KeyEntryAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

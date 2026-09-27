@@ -17,6 +17,7 @@ import net.styna.stynastmc.freecam.FreecamConfigImpl;
 import net.styna.stynastmc.muffler.Muffler;
 import net.styna.stynastmc.skins.SkinsBridge;
 import net.styna.stynastmc.skins.SkinsConfig;
+import net.styna.stynastmc.tweaks.TweaksConfig;
 import net.styna.stynastmc.zoom.Zoom;
 import net.styna.stynastmc.zoom.config.ZoomConfig;
 import net.styna.stynastmc.freecam.Freecam;
@@ -41,7 +42,8 @@ public final class StynaSTMCClient {
             Config.of(FreecamConfigImpl.SPEC, "freecam", NONE, NONE),
             Config.of(FontsConfig.SPEC, "fonts", FontsBridge::onConfigLoading, NONE),
             Config.of(SkinsConfig.SPEC, "skins", NONE, SkinsBridge::onConfigReloading),
-            Config.of(ZoomConfig.SPEC, "zoom", NONE, NONE));
+            Config.of(ZoomConfig.SPEC, "zoom", NONE, NONE),
+            Config.of(TweaksConfig.SPEC, "tweaks", NONE, NONE));
 
     private StynaSTMCClient() {
     }

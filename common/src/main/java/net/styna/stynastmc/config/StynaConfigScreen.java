@@ -12,11 +12,13 @@ import net.styna.stynastmc.config.tabs.HomeTab;
 import net.styna.stynastmc.config.tabs.MufflerTab;
 import net.styna.stynastmc.config.tabs.SkinTab;
 import net.styna.stynastmc.freecam.FreecamConfigImpl;
+import net.styna.stynastmc.tweaks.TweaksConfig;
 import net.styna.stynastmc.ui.UiTabScreen;
 import net.styna.stynastmc.zoom.config.ZoomConfig;
 
 public class StynaConfigScreen extends UiTabScreen {
     public static final int MUFFLER_TAB = 6;
+    public static final int TWEAKS_TAB = 7;
     private static int lastTab;
 
     public StynaConfigScreen(Screen parent) {
@@ -34,7 +36,8 @@ public class StynaConfigScreen extends UiTabScreen {
                 new FontsTab(this),
                 new SkinTab(this),
                 new ConfigTab(Component.translatable("stynastmc.configuration.zoom"), ZoomConfig.SPEC, none),
-                new MufflerTab()), tab);
+                new MufflerTab(),
+                new ConfigTab(Component.translatable("stynastmc.configuration.tweaks"), TweaksConfig.SPEC, none)), tab);
         lastTab = current;
     }
 
