@@ -79,6 +79,7 @@ public final class StynaSTMCClient {
         }
         Freecam.postTick(minecraft);
         ConfigKey.tick(minecraft);
+        DebugPauseKey.tick(minecraft);
         Muffler.tick(minecraft);
     }
 
