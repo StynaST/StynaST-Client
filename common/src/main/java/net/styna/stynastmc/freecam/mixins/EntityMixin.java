@@ -39,7 +39,6 @@ public class EntityMixin {
         }
     }
 
-    // Freezes the player's position if freezePlayer is enabled.
     @Inject(method = "moveRelative", at = @At("HEAD"), cancellable = true)
     private void onUpdateVelocity(CallbackInfo ci) {
         if (freecam$shouldFreeze()) {
@@ -47,7 +46,6 @@ public class EntityMixin {
         }
     }
 
-    // Freezes the player's position if freezePlayer is enabled.
     @Inject(method = "setPos(DDD)V", at = @At("HEAD"), cancellable = true)
     private void onSetPosition(CallbackInfo ci) {
         if (freecam$shouldFreeze()) {
@@ -55,7 +53,6 @@ public class EntityMixin {
         }
     }
 
-    // Freezes the player's position if freezePlayer is enabled.
     @Inject(method = "setPosRaw", at = @At("HEAD"), cancellable = true)
     private void onSetPos(CallbackInfo ci) {
         if (freecam$shouldFreeze()) {

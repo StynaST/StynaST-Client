@@ -26,7 +26,6 @@ public final class SkinImages {
     private SkinImages() {
     }
 
-    /** A skin uploaded to the GPU, at its source resolution. */
     public record Loaded(Identifier texture, int width, int height) {
     }
 

@@ -35,7 +35,6 @@ public abstract class UiScreen extends Screen {
 
     protected abstract void build();
 
-    /** Relayouts everything, e.g. after the game font changed. */
     public void rebuild() {
         init(width, height);
     }

@@ -46,7 +46,6 @@ public final class Zoom {
         return (float) (fov / current);
     }
 
-    /** Adjusts the zoom level with the scroll wheel. Returns true when the scroll was consumed. */
     public static boolean onScroll(double scrollY) {
         if (!active() || !ZoomConfig.SCROLL.get() || scrollY == 0) {
             return false;
@@ -56,7 +55,6 @@ public final class Zoom {
         return true;
     }
 
-    /** Mouse sensitivity to turn with while zoomed. */
     public static double sensitivity(double sensitivity) {
         if (current <= 1.0 || !ZoomConfig.SPEC.isLoaded() || !ZoomConfig.SCALE_SENSITIVITY.get()) {
             return sensitivity;

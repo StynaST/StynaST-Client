@@ -45,7 +45,6 @@ public final class SkinService {
     private SkinService() {
     }
 
-    /** What the service knows about one player's shared skin. */
     public record Entry(UUID uuid, String hash, SkinModel model) {
     }
 

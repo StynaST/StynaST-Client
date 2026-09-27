@@ -33,5 +33,4 @@ public class GameRendererMixin {
     }
 
     // Makes mouse clicks come from the player rather than the freecam entity when player control is enabled or if interaction mode is set to player.
-    // Moved to Minecraft#pick in 26.1
 }

@@ -40,15 +40,12 @@ public class Freecam {
 
     @ApiStatus.Internal
     public static void preTick(Minecraft mc) {
-        // Disable if the previous tick asked us to,
-        // or Freecam is restricted on the current server
         if ((disableNextTick || isRestrictedOnServer()) && isEnabled()) {
             toggle();
         }
         disableNextTick = false;
 
         if (isEnabled()) {
-            // Prevent player from being controlled when freecam is enabled
             if (mc.player != null && mc.player.input instanceof KeyboardInput && !isPlayerControlEnabled()) {
                 ClientInput input = new ClientInput();
                 Input keyPresses = mc.player.input.keyPresses;
@@ -281,7 +278,6 @@ public class Freecam {
         }
     }
 
-    /** Send a message to be shown over the action bar. */
     private static void sendOverlayMessage(Component message) {
         Optional.ofNullable(MC.player).ifPresent(player -> player.sendOverlayMessage(message));
     }

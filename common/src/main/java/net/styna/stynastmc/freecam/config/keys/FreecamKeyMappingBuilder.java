@@ -14,12 +14,6 @@ public class FreecamKeyMappingBuilder {
         this.translationKey = translationKey;
     }
 
-    /**
-     * Start building a {@link FreecamKeyMapping key} with the translation key provided.
-     *
-     * @param translationKey key to be appended onto {@code "key.freecam."}
-     * @return a {@link FreecamKeyMapping} builder
-     */
     public static FreecamKeyMappingBuilder builder(String translationKey) {
         return new FreecamKeyMappingBuilder(translationKey);
     }
@@ -49,22 +43,7 @@ public class FreecamKeyMappingBuilder {
         return this;
     }
 
-    /**
-     * Build the {@link FreecamKeyMapping key mapping}.
-     * <p>
-     * If an {@link #action(Runnable) action} was defined, it will be run when the key is <strong>pressed</strong>.
-     * <p>
-     * If a {@link #holdAction(HoldAction) hold action} was defined, it will be run while the key is <strong>held</strong>
-     * (each tick).
-     * <p>
-     * If both were defined, a {@link FreecamComboKeyMapping combo key} is provided where the {@link #holdAction(HoldAction) hold action}
-     * is run as normal and the {@link #action(Runnable) action} is run when the key is <strong>released</strong>.
-     * <br>
-     * If the key was held for {@link #maxHoldTicks(long) max hold ticks} or longer (default 10) then {@link #action(Runnable) action}
-     * is <strong>not run</strong>. It is also not run if any {@link #holdAction(HoldAction) hold action} returned
-     * {@code true} since the key last released.
-     * @return the {@link FreecamKeyMapping keybind}.
-     */
+    // With both actions, action runs on release unless held past maxHoldTicks or a hold action returned true.
     public FreecamKeyMapping build() {
         if (action != null && holdAction != null) {
             return new FreecamComboKeyMapping(translationKey, type, keyCode, action, holdAction, maxTicks);

@@ -29,7 +29,6 @@ import net.styna.stynastmc.ui.UiElement;
 import net.styna.stynastmc.ui.UiPanel;
 import net.styna.stynastmc.ui.UiWidgets;
 
-/** Browse the skin folder, preview any skin on a rotating model and use it for your own player. */
 public class SkinTab implements Tab {
     private static final int ENTRY_HEIGHT = 20;
     // File, resolution, model, buttons and status rows plus panel padding.
@@ -206,7 +205,6 @@ public class SkinTab implements Tab {
         rebuild();
     }
 
-    /** Uploads the applied skin so other players running the mod render it too. */
     private void share(Path file) {
         if (!SkinService.configured()) {
             return;
@@ -257,7 +255,6 @@ public class SkinTab implements Tab {
         return minecraft.player == null ? PlayerModelType.WIDE : minecraft.player.getSkin().model();
     }
 
-    /** One skin file: face thumbnail plus name, marked when it is the skin in use. */
     private class Entry extends UiElement {
         private final Path file;
         private final boolean applied;
@@ -308,7 +305,6 @@ public class SkinTab implements Tab {
         }
     }
 
-    /** Rotating 3D preview of the highlighted skin, dragged with the mouse like the vanilla skin widget. */
     private class Preview extends UiElement {
         private double lastX;
         private double lastY;

@@ -18,7 +18,6 @@ import net.styna.stynastmc.ui.UiElement;
 import net.styna.stynastmc.ui.UiPanel;
 import net.styna.stynastmc.ui.UiWidgets;
 
-/** Extreme Sound Muffler style editor: pick a scope (global or an anchor), then mute or turn down sounds in it. */
 public class MufflerTab implements Tab {
     private static final int ROW_HEIGHT = 18;
 

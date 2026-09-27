@@ -2,7 +2,6 @@ package net.styna.stynastmc.fonts;
 
 import net.minecraft.client.Minecraft;
 
-/** Applies the saved font once both the config and the font manager are ready. */
 public final class FontsBridge {
     private FontsBridge() {
     }

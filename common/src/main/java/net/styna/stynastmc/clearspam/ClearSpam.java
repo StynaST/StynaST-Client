@@ -34,7 +34,6 @@ public final class ClearSpam {
         messages.clear();
     }
 
-    /** Returns the message to show in its place. */
     public static Component onChat(Component original, boolean overlay) {
         if (disabled || overlay) {
             return original;
@@ -77,7 +76,6 @@ public final class ClearSpam {
         messages.clear();
     }
 
-    /** Handles .clearspam commands typed into chat. Returns true when the message was consumed. */
     public static boolean onSendChat(String mes) {
         if (!mes.startsWith(PREFIX)) {
             return false;

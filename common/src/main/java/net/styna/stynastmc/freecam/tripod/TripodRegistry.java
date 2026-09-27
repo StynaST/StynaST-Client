@@ -34,19 +34,14 @@ public class TripodRegistry {
 
     }
 
-    /**
-     * Clear all tripods for all dimensions.
-     */
     public void clear() {
         tripods.clear();
     }
 
-    // Get the current dimension
     private static DimensionType dimension() {
         return MC.level.dimensionType();
     }
 
-    // Construct a new dimension entry
     private static Map<TripodSlot, FreecamPosition> newEntry(DimensionType dimension) {
         return new EnumMap<>(TripodSlot.class);
     }

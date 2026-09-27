@@ -70,7 +70,6 @@ public class StatsViewScreen extends UiTabScreen {
         return query.isBlank() || name.getString().toLowerCase(Locale.ROOT).contains(query.trim().toLowerCase(Locale.ROOT));
     }
 
-    /** Short count for item slot overlays. */
     private static String compact(int value) {
         if (value < 1000) {
             return String.valueOf(value);
@@ -81,7 +80,6 @@ public class StatsViewScreen extends UiTabScreen {
         return String.format(Locale.ROOT, "%.1fm", value / 1_000_000.0);
     }
 
-    /** Search bar over a scrolling panel that refills whenever the query changes. */
     private abstract class SearchTab implements Tab {
         protected String query = "";
         protected UiPanel panel;
@@ -106,7 +104,6 @@ public class StatsViewScreen extends UiTabScreen {
             fill();
         }
 
-        /** Adds widgets right of the search bar, returning the width used. */
         protected int toolbar(UiElement area) {
             return 0;
         }

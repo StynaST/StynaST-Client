@@ -39,7 +39,6 @@ public class ConfigTab implements Tab {
     private boolean dirty;
     private UiPanel content;
 
-    /** A config section. Header sections only group their children and hold no values. */
     private record Section(List<String> path, List<StynaConfigSpec.ConfigValue<?>> values) {
     }
 
@@ -319,7 +318,6 @@ public class ConfigTab implements Tab {
         return Double::parseDouble;
     }
 
-    /** Swatch color for hex colors and gradient stops, otherwise null. */
     private static Integer swatch(String s) {
         String hex = null;
         if (COLOR.matcher(s.trim()).matches()) {

@@ -41,46 +41,23 @@ public enum ModBindings {
         lazyMapping = Suppliers.memoize(mappingSupplier);
     }
 
-    /**
-     * Lazily get the actual {@link FreecamKeyMapping} represented by this enum value.
-     * <p>
-     * Values are constructed if they haven't been already.
-     *
-     * @return the actual {@link FreecamKeyMapping}.
-     */
     public FreecamKeyMapping get() {
         return lazyMapping.get();
     }
 
-    /**
-     * Calls {@code action} using each {@link FreecamKeyMapping} owned by this enum.
-     * <p>
-     * Values are constructed if they haven't been already.
-     * <p>
-     * Static implementation of {@link Iterable#forEach(Consumer)}.
-     */
     public static void forEach(@NotNull Consumer<FreecamKeyMapping> action) {
         Objects.requireNonNull(action);
         iterator().forEachRemaining(action);
     }
 
-    /**
-     * Static implementation of {@link Iterable#iterator()}.
-     */
     public static @NotNull Iterator<FreecamKeyMapping> iterator() {
         return stream().iterator();
     }
 
-    /**
-     * Static implementation of {@link Iterable#spliterator()}.
-     */
     public static @NotNull Spliterator<FreecamKeyMapping> spliterator() {
         return stream().spliterator();
     }
 
-    /**
-     * Static implementation of {@link Collection#stream()}.
-     */
     public static @NotNull Stream<FreecamKeyMapping> stream() {
         return Arrays.stream(values()).map(ModBindings::get);
     }

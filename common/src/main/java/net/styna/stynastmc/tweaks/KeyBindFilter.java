@@ -6,7 +6,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
-/** Search text plus a mode, applied to the key binds list. */
 public record KeyBindFilter(String query, Mode mode) {
     public static final KeyBindFilter NONE = new KeyBindFilter("", Mode.ALL);
 
@@ -51,7 +50,6 @@ public record KeyBindFilter(String query, Mode mode) {
         return false;
     }
 
-    /** Implemented on KeyBindsList by mixin. */
     public interface Target {
         void stynastmc$filter(KeyBindFilter filter);
     }

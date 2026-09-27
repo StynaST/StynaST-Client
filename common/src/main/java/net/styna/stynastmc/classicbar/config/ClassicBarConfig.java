@@ -63,7 +63,6 @@ public final class ClassicBarConfig {
         JsonElement read();
     }
 
-    /** Current config for a bar, in the shape its codec expects. */
     public static JsonElement readBar(String name) {
         return BARS.get(name).read();
     }

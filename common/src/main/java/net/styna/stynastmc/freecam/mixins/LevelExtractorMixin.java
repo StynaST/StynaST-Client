@@ -25,7 +25,6 @@ public abstract class LevelExtractorMixin {
     abstract EntityRenderState callExtractEntity(final Entity entity, final float partialTickTime);
 
     // Add the local player to the visible entities when freecam is enabled so they get the outline
-    // NOTE: was in LevelRendererMixin until 26.2
     @Inject(method = "extractVisibleEntities", at = @At("TAIL"))
     private void onExtractVisibleEntities(Camera camera, Frustum frustum, DeltaTracker deltaTracker, LevelRenderState levelRenderState, CallbackInfo ci) {
         if (Freecam.isEnabled() && Freecam.isOutlineEnabled()) {

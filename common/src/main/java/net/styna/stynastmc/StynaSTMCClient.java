@@ -26,7 +26,6 @@ import net.styna.stynastmc.freecam.config.ModBindings;
 
 /** Loader independent client entry point. Loaders forward their events here. */
 public final class StynaSTMCClient {
-    /** A client config file, with callbacks for when it is first loaded and when it changes on disk. */
     public record Config(StynaConfigSpec spec, String fileName, Runnable onLoad, Runnable onReload) {
         private static Config of(StynaConfigSpec spec, String name, Runnable onLoad, Runnable onReload) {
             return new Config(spec, StynaSTMC.MODID + "-" + name + "-client.toml", onLoad, onReload);

@@ -84,7 +84,6 @@ public final class CustomSkins {
         return SkinsConfig.loaded() && SkinsConfig.ENABLED.get();
     }
 
-    /** Skin files in the configured folder, cached until {@link #refresh()}. */
     public static List<Path> list() {
         if (listing != null) {
             return listing;

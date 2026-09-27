@@ -82,7 +82,6 @@ public final class FontRuntime {
         return previewSettings;
     }
 
-    /** Applies the font saved in the config, downloading it first if needed. */
     public static void applyConfigured() {
         if (!isReady() || !FontsConfig.SPEC.isLoaded() || !FontsConfig.ENABLED.get() || FontsConfig.FAMILY.get().isBlank()) {
             return;

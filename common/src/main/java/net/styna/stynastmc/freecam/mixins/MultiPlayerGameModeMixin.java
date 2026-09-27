@@ -46,7 +46,6 @@ public class MultiPlayerGameModeMixin {
         }
     }
 
-    // Prevents interacting with entities when allowInteract is disabled, and prevents interacting with self.
 
     // Prevents attacking self.
     @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
