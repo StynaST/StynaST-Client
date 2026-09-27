@@ -183,11 +183,16 @@
   "stynastmc.configuration.durability_tooltip": "Durability tooltip",
   "stynastmc.configuration.no_fog": "No fog",
   "stynastmc.configuration.keybind_search": "Key bind search",
+  "stynastmc.configuration.stats_screen": "Statistics screen",
   "stynastmc.tooltip.durability": "Durability: %s / %s",
   "stynastmc.keybinds.search": "Search key binds...",
   "stynastmc.keybinds.show": "Show",
   "stynastmc.keybinds.filter.all": "All",
   "stynastmc.keybinds.filter.conflicts": "Conflicts",
   "stynastmc.keybinds.filter.unbound": "Unbound",
-  "stynastmc.keybinds.filter.changed": "Changed"
+  "stynastmc.keybinds.filter.changed": "Changed",
+  "stynastmc.stats.search": "Search...",
+  "stynastmc.stats.sort": "Sort: %s",
+  "stynastmc.stats.sort.name": "Name",
+  "stynastmc.stats.kills": "Killed %s  |  Killed by %s"
 }

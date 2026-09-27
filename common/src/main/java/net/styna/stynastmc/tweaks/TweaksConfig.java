@@ -8,6 +8,7 @@ public final class TweaksConfig {
     public static final StynaConfigSpec.BooleanValue DURABILITY_TOOLTIP;
     public static final StynaConfigSpec.BooleanValue NO_FOG;
     public static final StynaConfigSpec.BooleanValue KEYBIND_SEARCH;
+    public static final StynaConfigSpec.BooleanValue STATS_SCREEN;
 
     private TweaksConfig() {
     }
@@ -29,6 +30,8 @@ public final class TweaksConfig {
         builder.push("screens");
         KEYBIND_SEARCH = builder.comment("Search and conflict filters on the key binds screen.")
                 .define("keybind_search", true);
+        STATS_SCREEN = builder.comment("Replace the vanilla statistics screen.")
+                .define("stats_screen", true);
         builder.pop();
         SPEC = builder.build();
     }
