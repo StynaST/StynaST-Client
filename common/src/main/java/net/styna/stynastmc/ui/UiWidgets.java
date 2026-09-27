@@ -144,7 +144,7 @@ public final class UiWidgets {
             playClick();
             if (onPressButton != null) {
                 onPressButton.accept(button);
-            } else if (onPress != null && button == 0) {
+            } else if (onPress != null && button == InputConstants.MOUSE_BUTTON_LEFT) {
                 onPress.run();
             }
             return true;
@@ -257,6 +257,8 @@ public final class UiWidgets {
                 screen.setFocus(this);
             }
             focused = true;
+            // SDL only delivers typed characters while text input is started.
+            Minecraft.getInstance().textInputManager().startTextInput(this);
             int tx = x + 4 + (swatch != null ? height - 4 : 0);
             String visible = text.substring(scrollOffset);
             cursor = scrollOffset + Ui.font().plainSubstrByWidth(visible, (int) mx - tx).length();
@@ -266,6 +268,7 @@ public final class UiWidgets {
         @Override
         public void onFocusLost() {
             focused = false;
+            Minecraft.getInstance().textInputManager().stopTextInput(this);
         }
 
         private void edit(String newText, int newCursor) {

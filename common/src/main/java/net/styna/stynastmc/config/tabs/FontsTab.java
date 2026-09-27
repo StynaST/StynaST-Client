@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -71,7 +73,7 @@ public class FontsTab implements Tab {
         UiWidgets.Button categoryButton = area.add(new UiWidgets.Button(() -> Component.translatable("stynastmc.ui.fonts.category",
                 category == 0 ? Component.translatable("stynastmc.ui.fonts.all") : Component.literal(CATEGORIES.get(category))), null));
         categoryButton.onPressButton = mouse -> {
-            category = (category + (mouse == 1 ? CATEGORIES.size() - 1 : 1)) % CATEGORIES.size();
+            category = (category + (mouse == InputConstants.MOUSE_BUTTON_RIGHT ? CATEGORIES.size() - 1 : 1)) % CATEGORIES.size();
             listScroll = 0;
             fillList();
         };
