@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.styna.stynastmc.chat.mixin",
+  "client": [
+    "ChatComponentMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

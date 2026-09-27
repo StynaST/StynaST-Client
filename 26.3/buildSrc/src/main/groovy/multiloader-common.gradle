@@ -1,0 +1,87 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = 'StynaSTMC'
+}
+
+tasks.withType(Jar).configureEach {
+    def classifier = archiveClassifier
+    archiveFileName = classifier.orElse('').map { c ->
+        "StynaSTMC-${mod_version}+${minecraft_version}-${project.name}${c ? "-$c" : ''}.jar"
+    }
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    withSourcesJar()
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'TerraformersMC'
+        url = 'https://maven.terraformersmc.com/releases/'
+        content { includeGroup 'com.terraformersmc' }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = 'https://api.modrinth.com/maven'
+            }
+        }
+        filter { includeGroup 'maven.modrinth' }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+['apiElements', 'runtimeElements', 'sourcesElements'].each { variant ->
+    configurations.named(variant) {
+        outgoing {
+            capability("$group:$mod_id-${project.name}-${minecraft_version}:$version")
+            capability("$group:$mod_id:$version")
+        }
+    }
+}
+
+def expandProps = [
+        minecraft_version       : minecraft_version,
+        minecraft_version_range : minecraft_version_range,
+        neo_version             : neo_version,
+        neo_version_range       : neo_version_range,
+        fabric_loader_version   : fabric_loader_version,
+        mod_id                  : mod_id,
+        mod_name                : mod_name,
+        mod_license             : mod_license,
+        mod_version             : mod_version,
+        mod_authors             : mod_authors,
+        mod_description         : mod_description,
+        mod_credits             : mod_credits,
+]
+
+tasks.named('processResources', ProcessResources).configure {
+    inputs.properties expandProps
+    filesMatching(['META-INF/neoforge.mods.toml', 'fabric.mod.json']) {
+        expand expandProps
+    }
+}
+
+jar {
+    from(rootProject.file('THIRD-PARTY-NOTICES.txt'))
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

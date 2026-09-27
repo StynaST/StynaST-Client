@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.styna.stynastmc.fonts.mixin",
+  "client": [
+    "FontManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
