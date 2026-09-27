@@ -2,21 +2,10 @@ name: Release
 
 on:
   workflow_dispatch:
-    inputs:
-      minecraft_version:
-        description: Minecraft version folder to build
-        type: choice
-        options:
-          - '26.3'
-          - '26.2'
-        default: '26.3'
 
 jobs:
   release:
     runs-on: ubuntu-24.04
-    defaults:
-      run:
-        working-directory: ${{ inputs.minecraft_version }}
     steps:
       - name: Set up workspace
         uses: https://data.forgejo.org/actions/checkout@v6
@@ -112,6 +101,6 @@ jobs:
           sha: ${{ forgejo.sha }}
           url: https://code.styna.net/
           repo: Minecraft/StynaST-Client
-          release-dir: ${{ inputs.minecraft_version }}/dist/release
-          release-notes-file: ${{ inputs.minecraft_version }}/dist/release-notes.md
+          release-dir: dist/release
+          release-notes-file: dist/release-notes.md
           override: true
