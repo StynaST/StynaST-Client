@@ -8,6 +8,7 @@
   "key.stynastmc.config": "Open settings",
   "key.stynastmc.zoom": "Zoom",
   "key.stynastmc.muffler": "Open sound muffler",
+  "key.stynastmc.debug.pause": "Pause Without Menu",
   "freecam.msg.enabled": "Freecam has been enabled.",
   "freecam.msg.disabled": "Freecam has been disabled.",
   "freecam.msg.tripod.open": "Opening camera %s",
