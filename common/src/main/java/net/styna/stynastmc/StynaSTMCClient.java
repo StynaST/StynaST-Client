@@ -18,6 +18,7 @@ import net.styna.stynastmc.muffler.Muffler;
 import net.styna.stynastmc.skins.SkinsBridge;
 import net.styna.stynastmc.skins.SkinsConfig;
 import net.styna.stynastmc.tweaks.DebugPauseKey;
+import net.styna.stynastmc.tweaks.TradeCycler;
 import net.styna.stynastmc.tweaks.TweaksConfig;
 import net.styna.stynastmc.zoom.Zoom;
 import net.styna.stynastmc.zoom.config.ZoomConfig;
@@ -59,6 +60,7 @@ public final class StynaSTMCClient {
         keys.add(Muffler.KEY);
         keys.add(ConfigKey.OPEN);
         keys.add(DebugPauseKey.KEY);
+        keys.add(TradeCycler.KEY);
         return keys;
     }
 
@@ -79,6 +81,7 @@ public final class StynaSTMCClient {
         Freecam.postTick(minecraft);
         ConfigKey.tick(minecraft);
         DebugPauseKey.tick(minecraft);
+        TradeCycler.tick(minecraft);
         Muffler.tick(minecraft);
     }
 

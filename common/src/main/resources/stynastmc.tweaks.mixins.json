@@ -4,13 +4,18 @@
   "package": "net.styna.stynastmc.tweaks.mixin",
   "client": [
     "ClientPacketListenerMixin",
+    "DarknessFogEnvironmentMixin",
     "FogRendererMixin",
     "GuiMixin",
     "HudMixin",
+    "IrisCommonUniformsMixin",
     "ItemStackMixin",
     "KeyBindsListMixin",
     "KeyBindsScreenMixin",
     "KeyEntryAccessor",
+    "LightmapRenderStateExtractorMixin",
+    "MerchantScreenMixin",
+    "MobEffectFogEnvironmentMixin",
     "StatsScreenAccessor"
   ],
   "injectors": {

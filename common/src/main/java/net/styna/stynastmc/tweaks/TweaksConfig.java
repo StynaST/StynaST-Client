@@ -1,5 +1,7 @@
 package net.styna.stynastmc.tweaks;
 
+import java.util.List;
+
 import net.styna.stynastmc.config.StynaConfigSpec;
 
 public final class TweaksConfig {
@@ -9,6 +11,8 @@ public final class TweaksConfig {
     public static final StynaConfigSpec.BooleanValue NO_FOG;
     public static final StynaConfigSpec.BooleanValue KEYBIND_SEARCH;
     public static final StynaConfigSpec.BooleanValue STATS_SCREEN;
+    public static final StynaConfigSpec.ConfigValue<List<? extends String>> BOOK_TARGETS;
+    public static final StynaConfigSpec.IntValue CYCLE_DELAY;
 
     private TweaksConfig() {
     }
@@ -33,6 +37,14 @@ public final class TweaksConfig {
         STATS_SCREEN = builder.comment("Replace the vanilla statistics screen.")
                 .define("stats_screen", true);
         builder.pop();
+
+        builder.push("trading");
+        BOOK_TARGETS = builder.comment("Librarian books Trade Cycling auto cycle stops on, as enchantment=minimum level.")
+                .defineList("book_targets", () -> List.<String>of(), () -> "minecraft:efficiency=5", String.class::isInstance);
+        CYCLE_DELAY = builder.comment("Ticks to wait after new offers arrive before cycling again.")
+                .defineInRange("cycle_delay", 2, 0, 20);
+        builder.pop();
+
         SPEC = builder.build();
     }
 
