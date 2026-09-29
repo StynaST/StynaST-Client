@@ -9,4 +9,11 @@ Features:
   * Freecam
   * Sound muffler (mute any sound in the game without muting the whole game)
   * Longer chat history (keeps 16384 lines instead of 100)
+  * Armor HUD beside the hotbar
+  * Durability in item tooltips
+  * Key bind search with conflict, unbound and changed filters
+  * Better statistics screen (searchable stats, item grid with sorting, mob kills)
+  * No fog
+  * Darkness effect (wardens, sculk shriekers) no longer darkens the screen
+  * Librarian auto cycle with Trade Cycling: pick wanted books, press F7 in the trade screen and it rerolls until one shows up
 

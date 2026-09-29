@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -37,7 +39,6 @@ public class ConfigTab implements Tab {
     private boolean dirty;
     private UiPanel content;
 
-    /** A config section. Header sections only group their children and hold no values. */
     private record Section(List<String> path, List<StynaConfigSpec.ConfigValue<?>> values) {
     }
 
@@ -208,7 +209,7 @@ public class ConfigTab implements Tab {
             Object[] constants = e.getDeclaringClass().getEnumConstants();
             UiWidgets.Button cycle = row.add(new UiWidgets.Button(() -> Component.literal(value.get().toString()), null));
             cycle.onPressButton = mouse -> {
-                int index = ((Enum<?>) value.get()).ordinal() + (mouse == 1 ? constants.length - 1 : 1);
+                int index = ((Enum<?>) value.get()).ordinal() + (mouse == InputConstants.MOUSE_BUTTON_RIGHT ? constants.length - 1 : 1);
                 set((StynaConfigSpec.ConfigValue) value, constants[index % constants.length]);
             };
             cycle.bounds(right - 100, row.y + 2, 100, 16);
@@ -317,7 +318,6 @@ public class ConfigTab implements Tab {
         return Double::parseDouble;
     }
 
-    /** Swatch color for hex colors and gradient stops, otherwise null. */
     private static Integer swatch(String s) {
         String hex = null;
         if (COLOR.matcher(s.trim()).matches()) {

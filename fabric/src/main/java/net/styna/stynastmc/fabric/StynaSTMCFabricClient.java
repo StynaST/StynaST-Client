@@ -29,7 +29,6 @@ import net.styna.stynastmc.config.ConfigKey;
 import net.styna.stynastmc.muffler.Muffler;
 
 public final class StynaSTMCFabricClient implements ClientModInitializer {
-    /** Fabric element for each NeoForge layer id ClassicBar can hide. */
     private static final Map<Identifier, Identifier> LAYERS = Map.of(
             HudLayers.PLAYER_HEALTH, VanillaHudElements.HEALTH_BAR,
             HudLayers.ARMOR_LEVEL, VanillaHudElements.ARMOR_BAR,

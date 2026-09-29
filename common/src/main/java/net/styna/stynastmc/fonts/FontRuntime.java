@@ -82,7 +82,6 @@ public final class FontRuntime {
         return previewSettings;
     }
 
-    /** Applies the font saved in the config, downloading it first if needed. */
     public static void applyConfigured() {
         if (!isReady() || !FontsConfig.SPEC.isLoaded() || !FontsConfig.ENABLED.get() || FontsConfig.FAMILY.get().isBlank()) {
             return;
@@ -171,7 +170,7 @@ public final class FontRuntime {
                 }
                 FreeTypeUtil.assertError(FreeType.FT_Select_Charmap(face, FreeType.FT_ENCODING_UNICODE), "Find unicode charmap");
             }
-            return new TrueTypeGlyphProvider(buffer, face, settings.size(), settings.oversample(), settings.shiftX(), settings.shiftY(), "");
+            return new ColorGlyphProvider(new TrueTypeGlyphProvider(buffer, face, settings.size(), settings.oversample(), settings.shiftX(), settings.shiftY(), ""), face);
         } catch (RuntimeException e) {
             if (face != null) {
                 FreeType.FT_Done_Face(face);

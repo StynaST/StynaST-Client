@@ -19,7 +19,6 @@ public enum TripodSlot {
     }
 
     public static TripodSlot ofKeyCode(int keyCode) {
-        // We could compute keys 1-9 from a keycode offset, however an explicit mapping is more maintainable
         return switch (keyCode) {
             case InputConstants.KEY_1 -> ONE;
             case InputConstants.KEY_2 -> TWO;

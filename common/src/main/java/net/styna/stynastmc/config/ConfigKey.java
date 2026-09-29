@@ -6,7 +6,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.styna.stynastmc.StynaSTMC;
 
-/** Opens the settings screen from anywhere in game. */
 public final class ConfigKey {
     public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(StynaSTMC.id("controls"));
     public static final KeyMapping OPEN = new KeyMapping("key.stynastmc.config", InputConstants.KEY_F9, CATEGORY);

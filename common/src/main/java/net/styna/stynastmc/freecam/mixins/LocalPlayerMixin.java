@@ -29,7 +29,6 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
         }
     }
 
-    // Makes rotation depend upon FreeCamera rather than the player.
     @Inject(method = "getViewXRot", at = @At("HEAD"), cancellable = true)
     private void onGetViewXRot(float partialTick, CallbackInfoReturnable<Float> cir) {
         if (freecam$useFreecamRotation()) {
@@ -37,7 +36,6 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
         }
     }
 
-    // Makes rotation depend upon FreeCamera rather than the player.
     @Inject(method = "getViewYRot", at = @At("HEAD"), cancellable = true)
     private void onGetViewYRot(float partialTick, CallbackInfoReturnable<Float> cir) {
         if (freecam$useFreecamRotation()) {

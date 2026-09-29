@@ -72,7 +72,6 @@ public class FreeCamera extends AbstractClientPlayer {
 
         switch (perspective) {
             case INSIDE:
-                // No-op
                 break;
             case FIRST_PERSON:
                 // Move just in front of the player's eyes
@@ -88,9 +87,7 @@ public class FreeCamera extends AbstractClientPlayer {
         }
     }
 
-    // Move FreeCamera forward using FreecamPosition.moveForward.
     // If checkCollision is true, stop moving forward before hitting a collision.
-    // Return true if successfully able to move.
     private boolean moveForwardUntilCollision(FreecamPosition position, double distance, boolean checkCollision) {
         if (!checkCollision) {
             position.moveForward(distance);
@@ -100,13 +97,11 @@ public class FreeCamera extends AbstractClientPlayer {
         return moveForwardUntilCollision(position, distance);
     }
 
-    // Same as above, but always check collision.
     private boolean moveForwardUntilCollision(FreecamPosition position, double maxDistance) {
         boolean negative = maxDistance < 0;
         maxDistance = negative ? -1 * maxDistance : maxDistance;
         double increment = 0.1;
 
-        // Move forward by increment until we reach maxDistance or hit a collision
         for (double distance = 0.0; distance < maxDistance; distance += increment) {
             FreecamPosition oldPosition = new FreecamPosition(this);
 
@@ -243,7 +238,6 @@ public class FreeCamera extends AbstractClientPlayer {
         return true;
     }
 
-    // Enabling movement ticking
     @Override
     public boolean canSimulateMovement() {
         return true;

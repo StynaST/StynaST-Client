@@ -12,9 +12,6 @@ public class FreecamKeyMapping extends KeyMapping implements Tickable {
 
     private final Consumer<FreecamKeyMapping> onTick;
 
-    /**
-     * @apiNote should only be used if overriding {@link #tick()}
-     */
     protected FreecamKeyMapping(String translationKey, InputConstants.Type type, int code) {
         this(translationKey, type, code, null);
     }
@@ -29,11 +26,7 @@ public class FreecamKeyMapping extends KeyMapping implements Tickable {
         onTick.accept(this);
     }
 
-    /**
-     * Reset whether the key was pressed.
-     *
-     * @implNote Cannot use {@link KeyMapping#release()} because it doesn't work as expected.
-     */
+    // KeyMapping#release() doesn't work here.
     @SuppressWarnings("StatementWithEmptyBody")
     public void reset() {
         while (consumeClick()) {}

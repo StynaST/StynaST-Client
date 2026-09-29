@@ -37,14 +37,12 @@ public class UiPanel extends UiElement {
         return width - padding * 2 - (canScroll() ? SCROLLBAR_WIDTH : 0);
     }
 
-    /** Stacks an element below the previous one, full inner width. */
     public <T extends UiElement> T place(T element, int height, int gap) {
         element.bounds(innerX(), cursor, width - padding * 2 - SCROLLBAR_WIDTH, height);
         cursor += height + gap;
         return add(element);
     }
 
-    /** Reserves vertical space for manually positioned elements and returns its top. */
     public int reserve(int height, int gap) {
         int top = cursor;
         cursor += height + gap;

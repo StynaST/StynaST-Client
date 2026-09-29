@@ -19,7 +19,6 @@ import net.styna.stynastmc.classicbar.impl.overlays.vanilla.Health;
 import net.styna.stynastmc.classicbar.impl.overlays.vanilla.MountHealth;
 
 public final class BarRegistry {
-    /** Default bars, keyed by name. Written to config files on first load. */
     public static final Map<String, BarOverlay> REGISTRY = new LinkedHashMap<>();
 
     private BarRegistry() {

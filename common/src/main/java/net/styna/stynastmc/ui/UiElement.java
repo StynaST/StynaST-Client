@@ -127,7 +127,6 @@ public class UiElement {
     public void onFocusLost() {
     }
 
-    /** Deepest visible element under the mouse, for tooltips and hover. */
     public UiElement hovered(double mx, double my) {
         double cy = childMouseY(my);
         for (int i = children.size() - 1; i >= 0; i--) {

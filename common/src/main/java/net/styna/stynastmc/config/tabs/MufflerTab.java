@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -16,7 +18,6 @@ import net.styna.stynastmc.ui.UiElement;
 import net.styna.stynastmc.ui.UiPanel;
 import net.styna.stynastmc.ui.UiWidgets;
 
-/** Extreme Sound Muffler style editor: pick a scope (global or an anchor), then mute or turn down sounds in it. */
 public class MufflerTab implements Tab {
     private static final int ROW_HEIGHT = 18;
 
@@ -80,7 +81,7 @@ public class MufflerTab implements Tab {
                 () -> Component.translatable("stynastmc.ui.muffler.filter." + filter.name().toLowerCase(Locale.ROOT)), null));
         filterButton.onPressButton = mouse -> {
             Filter[] values = Filter.values();
-            filter = values[(filter.ordinal() + (mouse == 1 ? values.length - 1 : 1)) % values.length];
+            filter = values[(filter.ordinal() + (mouse == InputConstants.MOUSE_BUTTON_RIGHT ? values.length - 1 : 1)) % values.length];
             listScroll = 0;
             fillList();
         };

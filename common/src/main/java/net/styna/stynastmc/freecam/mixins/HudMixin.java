@@ -18,7 +18,6 @@ import static net.styna.stynastmc.freecam.Freecam.MC;
 @Mixin(Hud.class)
 public class HudMixin {
     // Makes HUD correspond to the player rather than the FreeCamera.
-    // NOTE: Was in GuiMixin before 26.2
     @Inject(method = "getCameraPlayer", at = @At("HEAD"), cancellable = true)
     private void onGetCameraPlayer(CallbackInfoReturnable<Player> cir) {
         if (Freecam.isEnabled()) {
@@ -27,7 +26,6 @@ public class HudMixin {
     }
 
     // Don't render equipped-item overlays while Freecam is active
-    // NOTE: Was in GuiMixin before 26.2
     @Inject(method = "extractTextureOverlay", at = @At("HEAD"), cancellable = true)
     private void onRenderTextureOverlay(
             GuiGraphicsExtractor graphics,

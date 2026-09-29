@@ -40,7 +40,6 @@ public final class RemoteSkins {
         return SkinsConfig.loaded() && SkinService.configured();
     }
 
-    /** Overrides another player's skin once theirs is cached; triggers a fetch when it is not. */
     public static PlayerSkin apply(UUID uuid, PlayerSkin base) {
         if (!enabled()) {
             return base;
@@ -114,7 +113,6 @@ public final class RemoteSkins {
         }));
     }
 
-    /** Drops every cached skin, e.g. after the service config changed. */
     public static void clear() {
         SKINS.values().forEach(loaded -> SkinImages.release(loaded.image().texture()));
         SKINS.clear();

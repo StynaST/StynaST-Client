@@ -19,7 +19,6 @@ public final class ClassicBar {
     private ClassicBar() {
     }
 
-    /** Whether a vanilla HUD layer should be skipped this frame. */
     public static boolean hidesLayer(Identifier layer) {
         return BarHud.replaces(layer) || (isContextualBar(layer) && BarHud.hidesExperienceBar());
     }

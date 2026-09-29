@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -19,7 +21,6 @@ import net.styna.stynastmc.ui.UiElement;
 import net.styna.stynastmc.ui.UiPanel;
 import net.styna.stynastmc.ui.UiWidgets;
 
-/** Browse Google Fonts, tune and preview one live, then apply it to the whole game. */
 public class FontsTab implements Tab {
     private static final List<String> CATEGORIES = List.of("", "Sans Serif", "Serif", "Display", "Handwriting", "Monospace");
     private static final Identifier BUTTON_SPRITE = Identifier.withDefaultNamespace("widget/button");
@@ -71,7 +72,7 @@ public class FontsTab implements Tab {
         UiWidgets.Button categoryButton = area.add(new UiWidgets.Button(() -> Component.translatable("stynastmc.ui.fonts.category",
                 category == 0 ? Component.translatable("stynastmc.ui.fonts.all") : Component.literal(CATEGORIES.get(category))), null));
         categoryButton.onPressButton = mouse -> {
-            category = (category + (mouse == 1 ? CATEGORIES.size() - 1 : 1)) % CATEGORIES.size();
+            category = (category + (mouse == InputConstants.MOUSE_BUTTON_RIGHT ? CATEGORIES.size() - 1 : 1)) % CATEGORIES.size();
             listScroll = 0;
             fillList();
         };
@@ -304,7 +305,6 @@ public class FontsTab implements Tab {
         }
     }
 
-    /** Sample text in the preview font set, plus a vanilla line to compare against. */
     private class PreviewBox extends UiElement {
         @Override
         protected void renderSelf(GuiGraphicsExtractor g, int mx, int my, float delta) {

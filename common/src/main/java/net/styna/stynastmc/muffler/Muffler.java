@@ -42,7 +42,6 @@ public final class Muffler {
     public static boolean inventoryButton = true;
     public static final Map<Identifier, Float> global = new LinkedHashMap<>();
     public static final List<Anchor> anchors = new ArrayList<>();
-    /** Recently heard sounds, oldest first. */
     public static final Map<Identifier, SoundSource> recent = new LinkedHashMap<>();
 
     private static SoundInstance preview;
@@ -132,7 +131,6 @@ public final class Muffler {
         Minecraft.getInstance().gui.setScreen(new StynaConfigScreen(parent, StynaConfigScreen.MUFFLER_TAB));
     }
 
-    /** Adds the muffler button to the inventory screen. */
     public static void onScreenInit(net.minecraft.client.gui.screens.Screen screen, java.util.function.Consumer<Button> addWidget) {
         if (!inventoryButton || !(screen instanceof InventoryScreen inventory)) {
             return;

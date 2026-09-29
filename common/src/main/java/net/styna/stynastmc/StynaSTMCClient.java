@@ -17,6 +17,9 @@ import net.styna.stynastmc.freecam.FreecamConfigImpl;
 import net.styna.stynastmc.muffler.Muffler;
 import net.styna.stynastmc.skins.SkinsBridge;
 import net.styna.stynastmc.skins.SkinsConfig;
+import net.styna.stynastmc.tweaks.DebugPauseKey;
+import net.styna.stynastmc.tweaks.TradeCycler;
+import net.styna.stynastmc.tweaks.TweaksConfig;
 import net.styna.stynastmc.zoom.Zoom;
 import net.styna.stynastmc.zoom.config.ZoomConfig;
 import net.styna.stynastmc.freecam.Freecam;
@@ -24,7 +27,6 @@ import net.styna.stynastmc.freecam.config.ModBindings;
 
 /** Loader independent client entry point. Loaders forward their events here. */
 public final class StynaSTMCClient {
-    /** A client config file, with callbacks for when it is first loaded and when it changes on disk. */
     public record Config(StynaConfigSpec spec, String fileName, Runnable onLoad, Runnable onReload) {
         private static Config of(StynaConfigSpec spec, String name, Runnable onLoad, Runnable onReload) {
             return new Config(spec, StynaSTMC.MODID + "-" + name + "-client.toml", onLoad, onReload);
@@ -41,7 +43,8 @@ public final class StynaSTMCClient {
             Config.of(FreecamConfigImpl.SPEC, "freecam", NONE, NONE),
             Config.of(FontsConfig.SPEC, "fonts", FontsBridge::onConfigLoading, NONE),
             Config.of(SkinsConfig.SPEC, "skins", NONE, SkinsBridge::onConfigReloading),
-            Config.of(ZoomConfig.SPEC, "zoom", NONE, NONE));
+            Config.of(ZoomConfig.SPEC, "zoom", NONE, NONE),
+            Config.of(TweaksConfig.SPEC, "tweaks", NONE, NONE));
 
     private StynaSTMCClient() {
     }
@@ -56,6 +59,8 @@ public final class StynaSTMCClient {
         keys.add(Zoom.KEY);
         keys.add(Muffler.KEY);
         keys.add(ConfigKey.OPEN);
+        keys.add(DebugPauseKey.KEY);
+        keys.add(TradeCycler.KEY);
         return keys;
     }
 
@@ -75,6 +80,8 @@ public final class StynaSTMCClient {
         }
         Freecam.postTick(minecraft);
         ConfigKey.tick(minecraft);
+        DebugPauseKey.tick(minecraft);
+        TradeCycler.tick(minecraft);
         Muffler.tick(minecraft);
     }
 

@@ -6,6 +6,8 @@ import java.util.function.Supplier;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -16,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 
-/** The handful of widgets the config and fonts screens need, drawn in the TCDCommons style. */
 public final class UiWidgets {
     private UiWidgets() {
     }
@@ -25,7 +26,6 @@ public final class UiWidgets {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 
-    /** Text label. Scale applies around the top left corner. */
     public static class Label extends UiElement {
         public Supplier<Component> text;
         public int color;
@@ -47,7 +47,6 @@ public final class UiWidgets {
             return this;
         }
 
-        /** Height the label needs at its width when wrapping. */
         public int wrappedHeight(int width) {
             return Ui.font().split(text.get(), (int) (width / scale)).size() * (int) Math.ceil(Ui.font().lineHeight * scale);
         }
@@ -70,7 +69,6 @@ public final class UiWidgets {
         }
     }
 
-    /** Yellow section heading, as used for stat groups. */
     public static Label group(Component text) {
         return new Label(text, Ui.GROUP_LABEL);
     }
@@ -144,14 +142,13 @@ public final class UiWidgets {
             playClick();
             if (onPressButton != null) {
                 onPressButton.accept(button);
-            } else if (onPress != null && button == 0) {
+            } else if (onPress != null && button == InputConstants.MOUSE_BUTTON_LEFT) {
                 onPress.run();
             }
             return true;
         }
     }
 
-    /** Two state switch using the TCDCommons toggle sprites. */
     public static class Toggle extends UiElement {
         private static final Identifier OFF = Identifier.fromNamespaceAndPath("stynastmc", "ui/togglebtn");
         private static final Identifier OFF_HOT = Identifier.fromNamespaceAndPath("stynastmc", "ui/togglebtn_highlighted");
@@ -324,7 +321,6 @@ public final class UiWidgets {
         }
     }
 
-    /** Horizontal 0 to 1 slider, labelled as a percentage. */
     public static class Slider extends UiElement {
         public double value;
         public Consumer<Double> onChange;
@@ -381,7 +377,6 @@ public final class UiWidgets {
         }
     }
 
-    /** Key on the left, arbitrary widget on the right, like a stat row. */
     public static class Row extends UiElement {
         public Component label;
 
@@ -401,7 +396,6 @@ public final class UiWidgets {
         }
     }
 
-    /** A row whose value is plain text on the right. */
     public static class InfoRow extends Row {
         private final Supplier<Component> value;
 

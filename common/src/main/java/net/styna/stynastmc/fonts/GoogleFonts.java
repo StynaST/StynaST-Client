@@ -135,7 +135,6 @@ public final class GoogleFonts {
         return variant.endsWith("i") ? name + " Italic" : name;
     }
 
-    /** Downloads the TTF for a family and variant, or returns the cached copy. */
     public static CompletableFuture<Path> download(String family, String variant) {
         Path file = CACHE.resolve(family.replaceAll("[^A-Za-z0-9]+", "_") + "-" + variant + ".ttf");
         if (Files.exists(file)) {

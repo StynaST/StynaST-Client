@@ -70,7 +70,6 @@ public final class Ui {
         g.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x, y, w, h);
     }
 
-    /** Draws text scaled around its top left corner. */
     public static void text(GuiGraphicsExtractor g, Component text, int x, int y, int color, float scale) {
         g.pose().pushMatrix();
         g.pose().translate(x, y);
@@ -79,7 +78,6 @@ public final class Ui {
         g.pose().popMatrix();
     }
 
-    /** Draws text vertically centered in a box, left or right aligned. */
     public static void textInBox(GuiGraphicsExtractor g, Component text, int x, int y, int w, int h, int color, boolean alignRight) {
         Font font = font();
         int width = font.width(text);
