@@ -170,7 +170,7 @@ public final class FontRuntime {
                 }
                 FreeTypeUtil.assertError(FreeType.FT_Select_Charmap(face, FreeType.FT_ENCODING_UNICODE), "Find unicode charmap");
             }
-            return new TrueTypeGlyphProvider(buffer, face, settings.size(), settings.oversample(), settings.shiftX(), settings.shiftY(), "");
+            return new ColorGlyphProvider(new TrueTypeGlyphProvider(buffer, face, settings.size(), settings.oversample(), settings.shiftX(), settings.shiftY(), ""), face);
         } catch (RuntimeException e) {
             if (face != null) {
                 FreeType.FT_Done_Face(face);
