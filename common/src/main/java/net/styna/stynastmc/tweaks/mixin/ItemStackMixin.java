@@ -18,7 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
-    @Inject(method = "addDetailsToTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/TooltipFlag;isAdvanced()Z", ordinal = 0))
+    // NeoForge moves the vanilla body into addDetailsToTooltipComponents
+    @Inject(method = {"addDetailsToTooltip", "addDetailsToTooltipComponents"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/TooltipFlag;isAdvanced()Z", ordinal = 0))
     private void stynastmc$durability(Item.TooltipContext context, TooltipDisplay display, @Nullable Player player, TooltipFlag flag,
             Consumer<Component> builder, CallbackInfo ci) {
         ItemStack stack = (ItemStack) (Object) this;
