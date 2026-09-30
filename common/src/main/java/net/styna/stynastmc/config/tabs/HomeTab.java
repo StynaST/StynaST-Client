@@ -82,7 +82,8 @@ public class HomeTab implements Tab {
         credits.place(UiWidgets.group(Component.translatable("stynastmc.ui.includes")), 17, Ui.GAP);
         for (String line : new String[] {"Classic Bar by Tfarcenim", "ClearSpam by Ruukas", "Freecam by MinecraftFreecam",
                 "Zoom inspired by WI Zoom by Wurst-Imperium", "Sound muffler inspired by Extreme Sound Muffler by leobeliik",
-                "UI style from Better Statistics Screen by TheCSDev", "Fonts from Google Fonts"}) {
+                "UI style from Better Statistics Screen by TheCSDev", "Fonts from Google Fonts", "Chat Heads by dzwdz",
+                "Container preview from ShulkerBoxTooltip by MisterPeModder", "Enchantment descriptions by Darkhax"}) {
             credit(credits, Component.literal(line));
         }
     }

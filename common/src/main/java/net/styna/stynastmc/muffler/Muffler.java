@@ -32,7 +32,8 @@ import net.styna.stynastmc.platform.Platform;
 
 /** Client side sound muffler in the style of Extreme Sound Muffler: per sound volume, globally or inside anchors. */
 public final class Muffler {
-    private static final Path FILE = Platform.INSTANCE.configDir().resolve(StynaSTMC.MODID).resolve("muffler.json");
+    private static final Path FILE = Platform.INSTANCE.modConfigFile("sound_muffler.json",
+            Platform.INSTANCE.configDir().resolve(StynaSTMC.MODID).resolve("muffler.json"));
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final KeyMapping KEY = new KeyMapping("key.stynastmc.muffler", InputConstants.UNKNOWN.getValue(), ConfigKey.CATEGORY);
     private static final Identifier ICON = Identifier.withDefaultNamespace("icon/music_notes");

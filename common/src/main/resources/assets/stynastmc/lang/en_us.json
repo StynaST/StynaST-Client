@@ -183,6 +183,7 @@
   "stynastmc.configuration.armor_hud": "Armor HUD",
   "stynastmc.configuration.durability_tooltip": "Durability tooltip",
   "stynastmc.configuration.no_fog": "No fog",
+  "stynastmc.configuration.no_bobbing": "No bobbing",
   "stynastmc.configuration.keybind_search": "Key bind search",
   "stynastmc.configuration.stats_screen": "Statistics screen",
   "stynastmc.tooltip.durability": "Durability: %s / %s",
@@ -213,5 +214,7 @@
   "stynastmc.trade.no_response": "No response. Missing workstation or Trade Cycling not on the server?",
   "stynastmc.trade.gave_up": "Gave up after %s cycles",
   "stynastmc.trade.failed": "Could not send Trade Cycling packet, see log",
-  "stynastmc.trade.none": "None picked"
+  "stynastmc.trade.none": "None picked",
+  "stynastmc.tooltip.preview.compact": "view contents",
+  "stynastmc.tooltip.preview.full": "view full contents"
 }

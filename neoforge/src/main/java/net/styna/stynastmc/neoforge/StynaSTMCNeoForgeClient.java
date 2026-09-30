@@ -7,7 +7,6 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.CalculatePlayerTurnEvent;
 import net.neoforged.neoforge.client.event.ClientChatEvent;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
@@ -15,6 +14,7 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
@@ -28,9 +28,11 @@ import net.styna.stynastmc.classicbar.BarHud;
 import net.styna.stynastmc.classicbar.ClassicBar;
 import net.styna.stynastmc.classicbar.HudStack;
 import net.styna.stynastmc.clearspam.ClearSpam;
+import net.styna.stynastmc.compat.ModCompat;
 import net.styna.stynastmc.config.ConfigKey;
 import net.styna.stynastmc.config.StynaConfigScreen;
 import net.styna.stynastmc.muffler.Muffler;
+import net.styna.stynastmc.tweaks.ContainerPreview;
 import net.styna.stynastmc.zoom.Zoom;
 
 @Mod(value = StynaSTMC.MODID, dist = Dist.CLIENT)
@@ -38,13 +40,17 @@ public final class StynaSTMCNeoForgeClient {
     public StynaSTMCNeoForgeClient(IEventBus modEventBus, ModContainer modContainer) {
         StynaSTMCClient.init();
         for (StynaSTMCClient.Config config : StynaSTMCClient.CONFIGS) {
-            config.spec().load(FMLPaths.CONFIGDIR.get().resolve(config.fileName()));
+            config.spec().load(config.path());
             config.onLoad().run();
         }
         modContainer.registerExtensionPoint(IConfigScreenFactory.class, (container, parent) -> new StynaConfigScreen(parent));
 
         modEventBus.addListener(StynaSTMCNeoForgeClient::registerKeys);
         modEventBus.addListener(StynaSTMCNeoForgeClient::registerLayers);
+        if (!ModCompat.isLoaded(ModCompat.SHULKER_BOX_TOOLTIP)) {
+            modEventBus.addListener((RegisterClientTooltipComponentFactoriesEvent event) ->
+                    event.register(ContainerPreview.Data.class, ContainerPreview.Client::new));
+        }
 
         IEventBus bus = NeoForge.EVENT_BUS;
         bus.addListener(EventPriority.HIGH, (ClientTickEvent.Pre event) -> StynaSTMCClient.preTick(Minecraft.getInstance()));

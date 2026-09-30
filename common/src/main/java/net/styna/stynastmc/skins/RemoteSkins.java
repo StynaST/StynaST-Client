@@ -15,13 +15,16 @@ import net.styna.stynastmc.StynaSTMC;
 
 /** HD skins of other players, pulled from the skin service and cached per profile. */
 public final class RemoteSkins {
-    private static final long RETRY_MS = 5 * 60 * 1000;
+    private static final long REFRESH_MS = 5_000;
+    private static final long RETRY_MS = 30_000;
+    private static final int QUERY_LIMIT = 200;
 
     private static final Map<UUID, Loaded> SKINS = new HashMap<>();
     private static final Map<UUID, Long> NEXT_ATTEMPT = new HashMap<>();
     private static final Set<UUID> IN_FLIGHT = new HashSet<>();
 
     private static long nextQuery;
+    private static int generation;
 
     private RemoteSkins() {
     }
@@ -40,63 +43,79 @@ public final class RemoteSkins {
         return SkinsConfig.loaded() && SkinService.configured();
     }
 
+    public static void tick() {
+        long now = System.currentTimeMillis();
+        if (!enabled() || now < nextQuery) {
+            return;
+        }
+        nextQuery = now + REFRESH_MS;
+        request(SkinService.onlinePlayers());
+    }
+
     public static PlayerSkin apply(UUID uuid, PlayerSkin base) {
         if (!enabled()) {
             return base;
         }
+        if (!IN_FLIGHT.contains(uuid) && System.currentTimeMillis() >= NEXT_ATTEMPT.getOrDefault(uuid, 0L)) {
+            request(List.of(uuid));
+        }
         Loaded loaded = SKINS.get(uuid);
         if (loaded == null) {
-            request(uuid);
             return base;
         }
         return PlayerSkin.insecure(new RemoteTexture(loaded.image().texture()), base.cape(), base.elytra(),
                 loaded.model().resolve(base.model()));
     }
 
-    private static void request(UUID uuid) {
+    private static void request(List<UUID> wanted) {
         long now = System.currentTimeMillis();
-        if (IN_FLIGHT.contains(uuid) || now < NEXT_ATTEMPT.getOrDefault(uuid, 0L)) {
-            return;
+        List<UUID> due = wanted.stream().distinct()
+                .filter(uuid -> !IN_FLIGHT.contains(uuid) && now >= NEXT_ATTEMPT.getOrDefault(uuid, 0L)).toList();
+        for (int start = 0; start < due.size(); start += QUERY_LIMIT) {
+            query(due.subList(start, Math.min(start + QUERY_LIMIT, due.size())), now);
         }
-        IN_FLIGHT.add(uuid);
-        NEXT_ATTEMPT.put(uuid, now + RETRY_MS);
+    }
 
-        // One query covers everyone online, so a single new face warms the whole server.
-        List<UUID> wanted = now >= nextQuery ? SkinService.onlinePlayers() : List.of(uuid);
-        nextQuery = now + 30_000;
-        if (!wanted.contains(uuid)) {
-            wanted = List.of(uuid);
-        }
-
-        List<UUID> queried = wanted;
+    private static void query(List<UUID> queried, long now) {
+        int requestedGeneration = generation;
+        IN_FLIGHT.addAll(queried);
+        queried.forEach(uuid -> NEXT_ATTEMPT.put(uuid, now + REFRESH_MS));
         SkinService.query(queried).whenComplete((entries, error) -> Minecraft.getInstance().execute(() -> {
-            IN_FLIGHT.remove(uuid);
+            if (requestedGeneration != generation) {
+                return;
+            }
+            IN_FLIGHT.removeAll(queried);
             if (error != null) {
+                queried.forEach(uuid -> NEXT_ATTEMPT.put(uuid, System.currentTimeMillis() + RETRY_MS));
                 StynaSTMC.LOGGER.debug("Skin query failed: {}", SkinService.message(error));
                 return;
             }
             for (UUID candidate : queried) {
                 SkinService.Entry entry = entries.get(candidate);
-                if (entry == null) {
-                    continue;
-                }
                 Loaded cached = SKINS.get(candidate);
-                if (cached != null && cached.hash().equals(entry.hash())) {
-                    continue;
+                if (entry == null) {
+                    remove(candidate);
+                } else if (cached != null && cached.hash().equals(entry.hash())) {
+                    SKINS.put(candidate, new Loaded(cached.image(), entry.model(), entry.hash()));
+                } else {
+                    fetch(entry, requestedGeneration);
                 }
-                fetch(entry);
             }
         }));
     }
 
-    private static void fetch(SkinService.Entry entry) {
+    private static void fetch(SkinService.Entry entry, int requestedGeneration) {
         UUID uuid = entry.uuid();
         if (!IN_FLIGHT.add(uuid)) {
             return;
         }
         SkinService.download(uuid).whenComplete((png, error) -> Minecraft.getInstance().execute(() -> {
+            if (requestedGeneration != generation) {
+                return;
+            }
             IN_FLIGHT.remove(uuid);
             if (error != null) {
+                NEXT_ATTEMPT.put(uuid, System.currentTimeMillis() + RETRY_MS);
                 StynaSTMC.LOGGER.debug("Skin download failed for {}: {}", uuid, SkinService.message(error));
                 return;
             }
@@ -106,14 +125,23 @@ public final class RemoteSkins {
                 if (previous != null) {
                     SkinImages.release(previous.image().texture());
                 }
-                NEXT_ATTEMPT.remove(uuid);
+                NEXT_ATTEMPT.put(uuid, System.currentTimeMillis() + REFRESH_MS);
             } catch (Exception e) {
+                NEXT_ATTEMPT.put(uuid, System.currentTimeMillis() + RETRY_MS);
                 StynaSTMC.LOGGER.warn("Bad remote skin for {}: {}", uuid, SkinService.message(e));
             }
         }));
     }
 
+    private static void remove(UUID uuid) {
+        Loaded previous = SKINS.remove(uuid);
+        if (previous != null) {
+            SkinImages.release(previous.image().texture());
+        }
+    }
+
     public static void clear() {
+        generation++;
         SKINS.values().forEach(loaded -> SkinImages.release(loaded.image().texture()));
         SKINS.clear();
         NEXT_ATTEMPT.clear();

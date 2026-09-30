@@ -25,10 +25,11 @@ public final class SkinsConfig {
     static {
         StynaConfigSpec.Builder builder = new StynaConfigSpec.Builder();
         builder.push("skins");
-        ENABLED = builder.comment("Render your own player with the skin picked in the Skin tab.").define("enabled", true);
-        DIRECTORY = builder.comment("Folder holding skin PNGs. 64x64 and HD multiples of it (128, 256, 512) are accepted.")
+        ENABLED = builder.comment("Render your own player with the local skin, or your skin uploaded to the skin service. False uses the account skin.")
+                .define("enabled", true);
+        DIRECTORY = builder.comment("Folder holding skin PNGs. 64x64 and HD multiples of it (128, 256, 512) are accepted. Empty means config/StynaSTMC/skins.")
                 .define("directory", "");
-        SKIN = builder.comment("Skin file inside the folder above. Empty means the account skin.").define("skin", "");
+        SKIN = builder.comment("Absolute path of the skin PNG. Empty or missing falls back to your uploaded skin.").define("skin", "");
         MODEL = builder.comment("Arm width. AUTO keeps the model of your account skin.").defineEnum("model", SkinModel.AUTO);
         builder.push("sharing");
         SERVICE_URL = builder.comment("Skin service origin. Empty disables sharing entirely.").define("service_url", "https://styna.net");

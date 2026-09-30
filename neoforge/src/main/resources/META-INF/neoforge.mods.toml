@@ -29,6 +29,12 @@ config="${mod_id}.muffler.mixins.json"
 config="${mod_id}.chat.mixins.json"
 
 [[mixins]]
+config="${mod_id}.chatheads.mixins.json"
+
+[[mixins]]
+config="${mod_id}.hotreload.mixins.json"
+
+[[mixins]]
 config="${mod_id}.tweaks.mixins.json"
 
 [[dependencies.${mod_id}]]
