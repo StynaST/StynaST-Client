@@ -9,6 +9,7 @@
     "DarknessFogEnvironmentMixin",
     "EnchantDescriptionsItemStackMixin",
     "FogRendererMixin",
+    "GameRendererMixin",
     "GuiMixin",
     "HudMixin",
     "IrisCommonUniformsMixin",

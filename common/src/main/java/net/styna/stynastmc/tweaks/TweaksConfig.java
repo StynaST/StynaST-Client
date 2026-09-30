@@ -9,6 +9,7 @@ public final class TweaksConfig {
     public static final StynaConfigSpec.BooleanValue ARMOR_HUD;
     public static final StynaConfigSpec.BooleanValue DURABILITY_TOOLTIP;
     public static final StynaConfigSpec.BooleanValue NO_FOG;
+    public static final StynaConfigSpec.BooleanValue NO_BOBBING;
     public static final StynaConfigSpec.BooleanValue KEYBIND_SEARCH;
     public static final StynaConfigSpec.BooleanValue STATS_SCREEN;
     public static final StynaConfigSpec.ConfigValue<List<? extends String>> BOOK_TARGETS;
@@ -29,6 +30,8 @@ public final class TweaksConfig {
         builder.push("world");
         NO_FOG = builder.comment("Remove distance and atmospheric fog. Water, lava and effect fog stay.")
                 .define("no_fog", true);
+        NO_BOBBING = builder.comment("Disable view bobbing while walking.")
+                .define("no_bobbing", false);
         builder.pop();
 
         builder.push("screens");
