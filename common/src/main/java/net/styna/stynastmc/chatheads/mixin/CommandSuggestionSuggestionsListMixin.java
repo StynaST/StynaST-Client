@@ -1,0 +1,107 @@
+/*
+ * Ported from Chat Heads by dzwdz (https://github.com/dzwdz/chat_heads).
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+package net.styna.stynastmc.chatheads.mixin;
+
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import com.mojang.brigadier.suggestion.Suggestion;
+import net.styna.stynastmc.chatheads.ChatHeads;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.CommandSuggestions;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.renderer.Rect2i;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.List;
+
+@Mixin(CommandSuggestions.SuggestionsList.class)
+public abstract class CommandSuggestionSuggestionsListMixin {
+    @Shadow @Final
+    private Rect2i rect;
+    @Shadow @Final
+    private List<Suggestion> suggestionList;
+
+    @ModifyVariable(method = "extractRenderState", at = @At("HEAD"), argsOnly = true)
+    public GuiGraphicsExtractor chatheads$captureGuiGraphics(GuiGraphicsExtractor guiGraphics, @Share("graphics") LocalRef<GuiGraphicsExtractor> graphicsRef) {
+        graphicsRef.set(guiGraphics);
+        return guiGraphics;
+    }
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    public void chatheads$fixOutOfBoundChatHeads(CommandSuggestions commandSuggestions, int x, int y, int width, List<Suggestion> suggestions, boolean narrateFirstSuggestion, CallbackInfo ci) {
+        var connection = Minecraft.getInstance().getConnection();
+        if (connection == null) return;
+
+        // when the (padded) chat head would render out of bounds
+        if (rect.getX() - (2 + 8 + 1) < 3) {
+            // and when a chat head could render at all
+            for (Suggestion suggestion : suggestionList) {
+                PlayerInfo playerInfo = connection.getPlayerInfo(suggestion.getText());
+                if (playerInfo != null) {
+                    // move suggestions to accommodate for chat heads
+                    rect.setPosition(3 + (2 + 8 + 1), rect.getY());
+                    break;
+                }
+            }
+        }
+    }
+
+    @ModifyVariable(method = "extractRenderState", at = @At("STORE"), ordinal = 0)
+    public Suggestion chatheads$captureSuggestion(Suggestion suggestion,
+            @Share("player") LocalRef<PlayerInfo> playerRef) {
+        var connection = Minecraft.getInstance().getConnection();
+        if (connection == null) return suggestion;
+
+        // lookup by profile name - this should be fine on any server
+        // since this applies to all suggestions, this might add chat heads in weird places, though very unlikely
+        playerRef.set(connection.getPlayerInfo(suggestion.getText()));
+
+        return suggestion;
+    }
+
+    @ModifyArg(
+            method = "extractRenderState",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fill(IIIII)V",
+                    ordinal = 4
+            ),
+            index = 0
+    )
+    public int chatheads$enlargeBackground(int x,
+            @Share("player") LocalRef<PlayerInfo> playerRef) {
+        if (playerRef.get() != null) return x - (2 + 8 + 1);
+        return x;
+    }
+
+    @ModifyArg(
+            method = "extractRenderState",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V",
+                    ordinal = 0
+            ),
+            index = 3
+    )
+    public int chatheads$renderChatHead(int y,
+            @Share("player") LocalRef<PlayerInfo> playerRef, @Share("graphics") LocalRef<GuiGraphicsExtractor> graphicsRef) {
+        int x = rect.getX() - (8 + 1);
+
+        if (playerRef.get() != null) {
+            ChatHeads.renderChatHead(graphicsRef.get(), x, y, playerRef.get(), 1.0f, false);
+        }
+
+        return y;
+    }
+}

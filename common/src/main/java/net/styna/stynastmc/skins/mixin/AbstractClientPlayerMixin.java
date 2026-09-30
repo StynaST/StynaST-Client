@@ -17,7 +17,7 @@ public class AbstractClientPlayerMixin {
     private void stynastmc$customSkin(CallbackInfoReturnable<PlayerSkin> cir) {
         AbstractClientPlayer player = (AbstractClientPlayer) (Object) this;
         if (player == Minecraft.getInstance().player) {
-            cir.setReturnValue(CustomSkins.apply(cir.getReturnValue()));
+            cir.setReturnValue(CustomSkins.apply(player.getUUID(), cir.getReturnValue()));
         } else {
             cir.setReturnValue(RemoteSkins.apply(player.getUUID(), cir.getReturnValue()));
         }

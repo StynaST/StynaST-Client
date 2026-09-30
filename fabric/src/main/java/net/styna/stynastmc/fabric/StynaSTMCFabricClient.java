@@ -3,7 +3,6 @@ package net.styna.stynastmc.fabric;
 import java.util.Map;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -11,6 +10,7 @@ import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -25,8 +25,10 @@ import net.styna.stynastmc.classicbar.HudStack;
 import net.styna.stynastmc.classicbar.network.ClassicBarNetwork;
 import net.styna.stynastmc.classicbar.network.ExhaustionSyncPayload;
 import net.styna.stynastmc.clearspam.ClearSpam;
+import net.styna.stynastmc.compat.ModCompat;
 import net.styna.stynastmc.config.ConfigKey;
 import net.styna.stynastmc.muffler.Muffler;
+import net.styna.stynastmc.tweaks.ContainerPreview;
 
 public final class StynaSTMCFabricClient implements ClientModInitializer {
     private static final Map<Identifier, Identifier> LAYERS = Map.of(
@@ -45,7 +47,7 @@ public final class StynaSTMCFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
         StynaSTMCClient.init();
         for (StynaSTMCClient.Config config : StynaSTMCClient.CONFIGS) {
-            config.spec().load(FabricLoader.getInstance().getConfigDir().resolve(config.fileName()));
+            config.spec().load(config.path());
             config.onLoad().run();
         }
 
@@ -66,6 +68,9 @@ public final class StynaSTMCFabricClient implements ClientModInitializer {
             payload.handle(context.player());
             ClassicBarNetwork.presentOnServer = true;
         });
+        if (!ModCompat.isLoaded(ModCompat.SHULKER_BOX_TOOLTIP)) {
+            ClientTooltipComponentCallback.EVENT.register(data -> data instanceof ContainerPreview.Data preview ? new ContainerPreview.Client(preview) : null);
+        }
         registerHud();
     }
 

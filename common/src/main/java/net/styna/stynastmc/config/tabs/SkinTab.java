@@ -5,6 +5,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 
+import net.minecraft.util.Util;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.model.Model;
@@ -15,7 +17,6 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.styna.stynastmc.config.StynaConfigScreen;
 import net.styna.stynastmc.skins.CustomSkins;
@@ -35,6 +36,7 @@ public class SkinTab implements Tab {
 
     private final StynaConfigScreen screen;
     private Path highlighted;
+    private Path browsing;
     private Component status = Component.empty();
     private double listScroll;
     private boolean dirty;
@@ -62,6 +64,9 @@ public class SkinTab implements Tab {
         }
         if (highlighted == null) {
             highlighted = CustomSkins.selected();
+            if (highlighted != null && browsing == null) {
+                browsing = highlighted.getParent();
+            }
         }
 
         int leftWidth = Math.max(160, (int) (area.width * 0.38));
@@ -72,11 +77,12 @@ public class SkinTab implements Tab {
 
         UiWidgets.TextField folder = area.add(new UiWidgets.TextField(SkinsConfig.DIRECTORY.get()));
         folder.bounds(left, folderLabel.endY() + 2, leftWidth - 38, 16);
-        folder.placeholder = Component.translatable("stynastmc.ui.skin.folder_hint");
+        folder.placeholder = Component.literal(CustomSkins.defaultDirectory().toString());
         folder.onChange = value -> {
             SkinsConfig.DIRECTORY.set(value.trim());
             dirty = true;
             highlighted = CustomSkins.selected();
+            browsing = null;
             CustomSkins.refresh();
             fillList();
         };
@@ -109,14 +115,24 @@ public class SkinTab implements Tab {
             list.place(wrapped(Component.translatable("stynastmc.ui.skin.folder_missing", dir.toString()), Ui.ERROR), 24, 0);
             return;
         }
-        List<Path> files = CustomSkins.list();
+        if (browsing == null || !browsing.startsWith(dir) || !Files.isDirectory(browsing)) {
+            browsing = dir;
+        }
+        if (!browsing.equals(dir)) {
+            FolderEntry up = list.place(new FolderEntry(browsing.getParent(), Component.literal("..")), ENTRY_HEIGHT, 1);
+            up.tooltip(Component.literal(CustomSkins.name(browsing)));
+        }
+        List<Path> files = CustomSkins.list(browsing);
         if (files.isEmpty()) {
             list.place(wrapped(Component.translatable("stynastmc.ui.skin.folder_empty"), Ui.MUTED), 24, 0);
             return;
         }
         Path applied = CustomSkins.selected();
         for (Path file : files) {
-            Entry entry = list.place(new Entry(file, file.equals(applied)), ENTRY_HEIGHT, 1);
+            UiElement entry = Files.isDirectory(file)
+                    ? new FolderEntry(file, Component.literal(file.getFileName() + "/"))
+                    : new Entry(file, file.equals(applied));
+            list.place(entry, ENTRY_HEIGHT, 1);
             entry.tooltip(Component.literal(file.toString()));
         }
         list.setScroll(listScroll);
@@ -163,7 +179,7 @@ public class SkinTab implements Tab {
         apply.enabled = highlighted != null;
         UiWidgets.Button reset = info.add(new UiWidgets.Button(Component.translatable("stynastmc.ui.skin.use_account"), this::useAccount));
         reset.bounds(apply.endX() + Ui.GAP * 2, actions, 110, 20);
-        reset.enabled = CustomSkins.enabled() && CustomSkins.selected() != null;
+        reset.enabled = CustomSkins.enabled();
 
         info.place(new UiWidgets.Label(() -> status, Ui.WHITE), 12, Ui.GAP);
     }
@@ -254,6 +270,35 @@ public class SkinTab implements Tab {
         return minecraft.player == null ? PlayerModelType.WIDE : minecraft.player.getSkin().model();
     }
 
+    private class FolderEntry extends UiElement {
+        private final Path folder;
+        private final Component name;
+
+        FolderEntry(Path folder, Component name) {
+            this.folder = folder;
+            this.name = name;
+        }
+
+        @Override
+        protected void renderSelf(GuiGraphicsExtractor g, int mx, int my, float delta) {
+            if (contains(mx, my)) {
+                Ui.outline(g, x, y, width, height, Ui.FOCUS_OUTLINE);
+            }
+            int size = height - 4;
+            Ui.sprite(g, Ui.FOLDER, x + 2, y + 2, size, size);
+            Ui.textInBox(g, name, x + size + 6, y, width - size - 10, height, Ui.WHITE, false);
+        }
+
+        @Override
+        protected boolean onClick(double mx, double my, int button) {
+            UiWidgets.playClick();
+            browsing = folder;
+            listScroll = 0;
+            fillList();
+            return true;
+        }
+    }
+
     private class Entry extends UiElement {
         private final Path file;
         private final boolean applied;
@@ -280,7 +325,7 @@ public class SkinTab implements Tab {
             } else {
                 face(g, loaded, x + 2, y + 2, size);
             }
-            Component name = Component.literal(CustomSkins.name(file));
+            Component name = Component.literal(file.getFileName().toString());
             if (applied) {
                 name = Component.literal("✔ ").withColor(0x55FF55).append(name.copy().withColor(0xFFFFFF));
             }

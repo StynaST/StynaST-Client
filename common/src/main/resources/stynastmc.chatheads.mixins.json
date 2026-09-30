@@ -1,0 +1,29 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.styna.stynastmc.chatheads.mixin",
+  "plugin": "net.styna.stynastmc.compat.CompatMixinPlugin",
+  "client": [
+    "BookViewScreenMixin",
+    "ChatComponentInnerMixin",
+    "ChatComponentMixin",
+    "ChatComponentMixin2",
+    "ChatComponentRenderMixin",
+    "ChatListenerMixin",
+    "ClientPacketListenerMixin",
+    "CommandSuggestionSuggestionsListMixin",
+    "ConnectionMixin",
+    "DownloadedPackSourceMixin",
+    "GuiMessageLineMixin",
+    "GuiMessageMixin",
+    "GuiRendererMixin",
+    "PlainTextRenderableMixin",
+    "PlayerChatMessageMixin",
+    "PlayerGlyphProviderInstanceMixin",
+    "PlayerGlyphProviderMixin",
+    "SkinTextureDownloaderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

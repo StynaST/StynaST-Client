@@ -34,7 +34,7 @@ import net.styna.stynastmc.StynaSTMC;
  * and TTF URLs come from the CSS2 API, which serves TrueType to legacy user agents.
  */
 public final class GoogleFonts {
-    public static final Path DIR = Platform.INSTANCE.configDir().resolve(StynaSTMC.MODID).resolve("fonts");
+    public static final Path DIR = Platform.INSTANCE.modConfigFile("fonts", Platform.INSTANCE.configDir().resolve(StynaSTMC.MODID).resolve("fonts"));
     private static final Path CATALOG = DIR.resolve("google_fonts.json");
     private static final Path CACHE = DIR.resolve("cache");
     private static final Duration CATALOG_MAX_AGE = Duration.ofDays(7);

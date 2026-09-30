@@ -26,7 +26,7 @@ public abstract class UiScreen extends Screen {
 
     @Override
     protected void init() {
-        focus = null;
+        setFocus(null);
         drag = null;
         root.clearChildren();
         root.bounds(0, 0, width, height);
@@ -105,6 +105,12 @@ public abstract class UiScreen extends Screen {
     @Override
     public void tick() {
         root.tick();
+    }
+
+    @Override
+    public void removed() {
+        setFocus(null);
+        super.removed();
     }
 
     @Override

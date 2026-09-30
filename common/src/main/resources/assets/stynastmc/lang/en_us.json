@@ -213,5 +213,7 @@
   "stynastmc.trade.no_response": "No response. Missing workstation or Trade Cycling not on the server?",
   "stynastmc.trade.gave_up": "Gave up after %s cycles",
   "stynastmc.trade.failed": "Could not send Trade Cycling packet, see log",
-  "stynastmc.trade.none": "None picked"
+  "stynastmc.trade.none": "None picked",
+  "stynastmc.tooltip.preview.compact": "view contents",
+  "stynastmc.tooltip.preview.full": "view full contents"
 }
