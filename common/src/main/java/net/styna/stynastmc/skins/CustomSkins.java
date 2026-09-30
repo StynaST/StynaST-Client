@@ -14,8 +14,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -43,10 +45,17 @@ public final class CustomSkins {
     private static final Map<Path, FileState> FILES = new HashMap<>();
     private static final Map<Path, FileState> CHANGES = new HashMap<>();
     private static long nextCheck;
+    private static long nextShare;
+    private static SharedSkin shared;
+    private static SharedSkin uploading;
+    private static CompletableFuture<Void> upload;
 
     private static final Map<Path, List<Path>> LISTINGS = new HashMap<>();
 
     private CustomSkins() {
+    }
+
+    private record SharedSkin(Path file, Identifier texture, SkinModel model) {
     }
 
     private record FileState(FileTime modified, long size, Object key) {
@@ -92,6 +101,40 @@ public final class CustomSkins {
                 }
             }
         }
+        if (uploading == null && now >= nextShare) {
+            shareSelected();
+        }
+    }
+
+    public static CompletableFuture<Void> shareSelected() {
+        Path file = selected();
+        SkinImages.Loaded image = file == null ? null : LOADED.get(file);
+        if (!enabled() || !SkinService.configured() || image == null || CHANGES.containsKey(file) || ERRORS.containsKey(file)) {
+            return CompletableFuture.completedFuture(null);
+        }
+        SharedSkin current = new SharedSkin(file, image.texture(), SkinsConfig.MODEL.get());
+        if (current.equals(uploading)) {
+            return upload;
+        }
+        if (uploading == null && current.equals(shared)) {
+            return CompletableFuture.completedFuture(null);
+        }
+        uploading = current;
+        upload = SkinService.upload(file, current.model());
+        upload.whenComplete((unused, error) -> Minecraft.getInstance().execute(() -> {
+            if (uploading != current) {
+                return;
+            }
+            uploading = null;
+            if (error == null) {
+                shared = current;
+                nextShare = 0;
+            } else {
+                nextShare = System.currentTimeMillis() + 30_000;
+                StynaSTMC.LOGGER.debug("Skin live sharing failed: {}", SkinService.message(error));
+            }
+        }));
+        return upload;
     }
 
     /** A texture uploaded by this mod, standing in for a downloaded skin. */
@@ -224,6 +267,8 @@ public final class CustomSkins {
     }
 
     public static void select(Path file) {
+        shared = null;
+        nextShare = 0;
         SkinsConfig.SKIN.set(file == null ? "" : file.toAbsolutePath().normalize().toString());
         SkinsConfig.ENABLED.set(file != null);
         SkinsConfig.save();

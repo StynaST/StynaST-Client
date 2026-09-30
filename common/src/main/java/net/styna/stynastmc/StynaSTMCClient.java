@@ -25,6 +25,7 @@ import net.styna.stynastmc.muffler.Muffler;
 import net.styna.stynastmc.platform.Platform;
 import net.styna.stynastmc.skins.SkinsBridge;
 import net.styna.stynastmc.skins.CustomSkins;
+import net.styna.stynastmc.skins.RemoteSkins;
 import net.styna.stynastmc.skins.SkinsConfig;
 import net.styna.stynastmc.tweaks.ContainerPreviewConfig;
 import net.styna.stynastmc.tweaks.DebugPauseKey;
@@ -106,10 +107,12 @@ public final class StynaSTMCClient {
         Muffler.tick(minecraft);
         HotReload.tick(minecraft);
         CustomSkins.tick();
+        RemoteSkins.tick();
         SkinTotem.tick(minecraft);
     }
 
     public static void onLoggingOut() {
+        RemoteSkins.clear();
         ClearSpam.onDisconnect();
         net.styna.stynastmc.classicbar.network.ClassicBarNetwork.presentOnServer = false;
     }

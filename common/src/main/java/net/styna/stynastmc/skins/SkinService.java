@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.Supplier;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -41,6 +42,7 @@ public final class SkinService {
     private static long tokenExpiresAt;
     private static Throwable signInFailure;
     private static long signInRetryAt;
+    private static CompletableFuture<Void> skinUpdate = CompletableFuture.completedFuture(null);
 
     private SkinService() {
     }
@@ -144,7 +146,7 @@ public final class SkinService {
     }
 
     public static CompletableFuture<Void> upload(Path file, SkinModel model) {
-        return token().thenApplyAsync(bearer -> {
+        return updateSkin(() -> token().thenApplyAsync(bearer -> {
             byte[] png;
             try {
                 png = Files.readAllBytes(file);
@@ -165,11 +167,11 @@ public final class SkinService {
                 throw new CompletionException(new IOException("Upload failed: " + errorOf(response)));
             }
             return null;
-        });
+        }));
     }
 
     public static CompletableFuture<Void> clear() {
-        return token().thenApplyAsync(bearer -> {
+        return updateSkin(() -> token().thenApplyAsync(bearer -> {
             HttpRequest request = HttpRequest.newBuilder(uri("/api/minecraft/skins/self"))
                     .timeout(TIMEOUT)
                     .header("Authorization", "Bearer " + bearer)
@@ -180,7 +182,13 @@ public final class SkinService {
                 throw new CompletionException(new IOException("Removal failed: " + errorOf(response)));
             }
             return null;
-        });
+        }));
+    }
+
+    private static synchronized CompletableFuture<Void> updateSkin(Supplier<CompletableFuture<Void>> action) {
+        // Keep slow uploads from overwriting a later selection or account-skin reset.
+        skinUpdate = skinUpdate.handle((unused, error) -> null).thenCompose(unused -> action.get());
+        return skinUpdate;
     }
 
     public static CompletableFuture<Map<UUID, Entry>> query(List<UUID> uuids) {

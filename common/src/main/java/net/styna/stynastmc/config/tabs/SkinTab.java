@@ -225,7 +225,7 @@ public class SkinTab implements Tab {
             return;
         }
         setStatus(Component.translatable("stynastmc.ui.skin.sharing"), Ui.MUTED);
-        SkinService.upload(file, SkinsConfig.MODEL.get()).whenComplete((unused, error) -> Minecraft.getInstance().execute(() -> {
+        CustomSkins.shareSelected().whenComplete((unused, error) -> Minecraft.getInstance().execute(() -> {
             if (error != null) {
                 setStatus(Component.translatable("stynastmc.ui.skin.share_failed", SkinService.message(error)), Ui.ERROR);
             } else {
