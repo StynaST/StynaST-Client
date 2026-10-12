@@ -8,6 +8,9 @@ import java.util.stream.Stream;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.styna.stynastmc.capes.Capes;
+import net.styna.stynastmc.capes.CapesConfig;
+import net.styna.stynastmc.capes.RemoteCapes;
 import net.styna.stynastmc.chatheads.config.ChatHeadsConfig;
 import net.styna.stynastmc.compat.ModCompat;
 import net.styna.stynastmc.config.StynaConfigSpec;
@@ -16,6 +19,8 @@ import net.styna.stynastmc.classicbar.config.ClassicBarConfig;
 import net.styna.stynastmc.clearspam.ClearSpam;
 import net.styna.stynastmc.clearspam.config.ClearSpamConfig;
 import net.styna.stynastmc.config.ConfigKey;
+import net.styna.stynastmc.firstperson.FirstPerson;
+import net.styna.stynastmc.firstperson.FirstPersonConfig;
 import net.styna.stynastmc.fonts.FontsBridge;
 import net.styna.stynastmc.fonts.FontsConfig;
 import net.styna.stynastmc.hotreload.HotReload;
@@ -56,7 +61,9 @@ public final class StynaSTMCClient {
             new Config(FreecamConfigImpl.SPEC, "freecam", "freecam", NONE, NONE),
             new Config(FontsConfig.SPEC, "fonts", "fonts", FontsBridge::onConfigLoading, NONE),
             new Config(SkinsConfig.SPEC, "skins", "skins", NONE, SkinsBridge::onConfigReloading),
+            new Config(CapesConfig.SPEC, "capes", "capes", NONE, Capes::onConfigReloading),
             new Config(ZoomConfig.SPEC, "zoom", "zoom", NONE, NONE),
+            unless(ModCompat.FIRST_PERSON, new Config(FirstPersonConfig.SPEC, "firstperson", "firstperson", NONE, NONE)),
             new Config(TweaksConfig.SPEC, "tweaks", "tweaks", NONE, NONE),
             unless(ModCompat.ENCHANT_DESCRIPTIONS, new Config(EnchantDescriptionsConfig.SPEC, "enchantdescriptions", "enchantdescriptions", NONE, NONE)),
             unless(ModCompat.SHULKER_BOX_TOOLTIP, new Config(ContainerPreviewConfig.SPEC, "containerpreview", "containerpreview", NONE, NONE)),
@@ -79,6 +86,9 @@ public final class StynaSTMCClient {
         List<KeyMapping> keys = new ArrayList<>();
         ModBindings.forEach(keys::add);
         keys.add(Zoom.KEY);
+        if (!ModCompat.isLoaded(ModCompat.FIRST_PERSON)) {
+            keys.add(FirstPerson.KEY);
+        }
         keys.add(Muffler.KEY);
         keys.add(ConfigKey.OPEN);
         keys.add(DebugPauseKey.KEY);
@@ -102,17 +112,20 @@ public final class StynaSTMCClient {
         }
         Freecam.postTick(minecraft);
         ConfigKey.tick(minecraft);
+        FirstPerson.tick(minecraft);
         DebugPauseKey.tick(minecraft);
         TradeCycler.tick(minecraft);
         Muffler.tick(minecraft);
         HotReload.tick(minecraft);
         CustomSkins.tick();
         RemoteSkins.tick();
+        RemoteCapes.tick();
         SkinTotem.tick(minecraft);
     }
 
     public static void onLoggingOut() {
         RemoteSkins.clear();
+        Capes.onLoggingOut();
         ClearSpam.onDisconnect();
         net.styna.stynastmc.classicbar.network.ClassicBarNetwork.presentOnServer = false;
     }

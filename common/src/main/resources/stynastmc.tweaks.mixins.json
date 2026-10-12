@@ -4,6 +4,7 @@
   "package": "net.styna.stynastmc.tweaks.mixin",
   "plugin": "net.styna.stynastmc.compat.CompatMixinPlugin",
   "client": [
+    "AdvancementsScreenAccessor",
     "ClientPacketListenerMixin",
     "ContainerPreviewItemStackMixin",
     "DarknessFogEnvironmentMixin",

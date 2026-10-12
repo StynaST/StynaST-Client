@@ -83,7 +83,8 @@ public class HomeTab implements Tab {
         for (String line : new String[] {"Classic Bar by Tfarcenim", "ClearSpam by Ruukas", "Freecam by MinecraftFreecam",
                 "Zoom inspired by WI Zoom by Wurst-Imperium", "Sound muffler inspired by Extreme Sound Muffler by leobeliik",
                 "UI style from Better Statistics Screen by TheCSDev", "Fonts from Google Fonts", "Chat Heads by dzwdz",
-                "Container preview from ShulkerBoxTooltip by MisterPeModder", "Enchantment descriptions by Darkhax"}) {
+                "Container preview from ShulkerBoxTooltip by MisterPeModder", "Enchantment descriptions by Darkhax",
+                "First person body from FirstPersonModel by tr7zw"}) {
             credit(credits, Component.literal(line));
         }
     }

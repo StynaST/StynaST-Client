@@ -9,6 +9,7 @@ import net.styna.stynastmc.StynaSTMC;
 public final class ModCompat {
     public static final String CHAT_HEADS = "chat_heads";
     public static final String ENCHANT_DESCRIPTIONS = "enchdesc";
+    public static final String FIRST_PERSON = "firstperson";
     public static final String SHULKER_BOX_TOOLTIP = "shulkerboxtooltip";
 
     private static final Map<String, Boolean> LOADED = new ConcurrentHashMap<>();

@@ -4,6 +4,7 @@
   "package": "net.styna.stynastmc.skins.mixin",
   "client": [
     "AbstractClientPlayerMixin",
+    "GuiSkinRendererMixin",
     "PlayerInfoMixin",
     "PlayerSkinRenderInfoMixin",
     "SkinTextureDownloaderMixin"

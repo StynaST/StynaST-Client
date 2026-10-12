@@ -10,8 +10,6 @@ public final class TweaksConfig {
     public static final StynaConfigSpec.BooleanValue DURABILITY_TOOLTIP;
     public static final StynaConfigSpec.BooleanValue NO_FOG;
     public static final StynaConfigSpec.BooleanValue NO_BOBBING;
-    public static final StynaConfigSpec.BooleanValue KEYBIND_SEARCH;
-    public static final StynaConfigSpec.BooleanValue STATS_SCREEN;
     public static final StynaConfigSpec.ConfigValue<List<? extends String>> BOOK_TARGETS;
     public static final StynaConfigSpec.IntValue CYCLE_DELAY;
 
@@ -32,13 +30,6 @@ public final class TweaksConfig {
                 .define("no_fog", true);
         NO_BOBBING = builder.comment("Disable view bobbing while walking.")
                 .define("no_bobbing", false);
-        builder.pop();
-
-        builder.push("screens");
-        KEYBIND_SEARCH = builder.comment("Search and conflict filters on the key binds screen.")
-                .define("keybind_search", true);
-        STATS_SCREEN = builder.comment("Replace the vanilla statistics screen.")
-                .define("stats_screen", true);
         builder.pop();
 
         builder.push("trading");

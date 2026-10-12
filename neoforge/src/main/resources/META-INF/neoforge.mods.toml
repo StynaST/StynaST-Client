@@ -37,6 +37,9 @@ config="${mod_id}.hotreload.mixins.json"
 [[mixins]]
 config="${mod_id}.tweaks.mixins.json"
 
+[[mixins]]
+config="${mod_id}.firstperson.mixins.json"
+
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"
