@@ -43,11 +43,15 @@ public final class SkinService {
     private static Throwable signInFailure;
     private static long signInRetryAt;
     private static CompletableFuture<Void> skinUpdate = CompletableFuture.completedFuture(null);
+    private static CompletableFuture<Void> capeUpdate = CompletableFuture.completedFuture(null);
 
     private SkinService() {
     }
 
     public record Entry(UUID uuid, String hash, SkinModel model) {
+    }
+
+    public record CapeEntry(UUID uuid, String hash, int frames) {
     }
 
     public static boolean configured() {
@@ -225,6 +229,98 @@ public final class SkinService {
     public static CompletableFuture<byte[]> download(UUID uuid) {
         return token().thenApplyAsync(bearer -> {
             HttpRequest request = HttpRequest.newBuilder(uri("/api/minecraft/skins/" + uuid + ".png"))
+                    .timeout(TIMEOUT)
+                    .header("Authorization", "Bearer " + bearer)
+                    .GET()
+                    .build();
+            HttpResponse<byte[]> response = send(request, HttpResponse.BodyHandlers.ofByteArray());
+            if (response.statusCode() == 401) {
+                forgetToken();
+            }
+            if (response.statusCode() != 200) {
+                throw new CompletionException(new IOException("Download failed: HTTP " + response.statusCode()));
+            }
+            return response.body();
+        });
+    }
+
+    /** Uploads an already normalized cape sheet (padded layout, frames stacked vertically). */
+    public static CompletableFuture<Void> uploadCape(byte[] png) {
+        return updateCape(() -> token().thenApplyAsync(bearer -> {
+            HttpRequest request = HttpRequest.newBuilder(uri("/api/minecraft/capes/self"))
+                    .timeout(TIMEOUT)
+                    .header("Authorization", "Bearer " + bearer)
+                    .header("Content-Type", "image/png")
+                    .PUT(HttpRequest.BodyPublishers.ofByteArray(png))
+                    .build();
+            HttpResponse<String> response = send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 401) {
+                forgetToken();
+            }
+            if (response.statusCode() != 200) {
+                throw new CompletionException(new IOException("Upload failed: " + errorOf(response)));
+            }
+            return null;
+        }));
+    }
+
+    public static CompletableFuture<Void> clearCape() {
+        return updateCape(() -> token().thenApplyAsync(bearer -> {
+            HttpRequest request = HttpRequest.newBuilder(uri("/api/minecraft/capes/self"))
+                    .timeout(TIMEOUT)
+                    .header("Authorization", "Bearer " + bearer)
+                    .DELETE()
+                    .build();
+            HttpResponse<String> response = send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 401) {
+                forgetToken();
+            }
+            if (response.statusCode() != 200) {
+                throw new CompletionException(new IOException("Removal failed: " + errorOf(response)));
+            }
+            return null;
+        }));
+    }
+
+    private static synchronized CompletableFuture<Void> updateCape(Supplier<CompletableFuture<Void>> action) {
+        capeUpdate = capeUpdate.handle((unused, error) -> null).thenCompose(unused -> action.get());
+        return capeUpdate;
+    }
+
+    public static CompletableFuture<Map<UUID, CapeEntry>> queryCapes(List<UUID> uuids) {
+        return token().thenApplyAsync(bearer -> {
+            JsonObject body = new JsonObject();
+            com.google.gson.JsonArray array = new com.google.gson.JsonArray();
+            uuids.forEach(uuid -> array.add(uuid.toString()));
+            body.add("uuids", array);
+
+            HttpRequest request = HttpRequest.newBuilder(uri("/api/minecraft/capes/query"))
+                    .timeout(TIMEOUT)
+                    .header("Authorization", "Bearer " + bearer)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body.toString(), StandardCharsets.UTF_8))
+                    .build();
+            HttpResponse<String> response = send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 401) {
+                forgetToken();
+            }
+            if (response.statusCode() != 200) {
+                throw new CompletionException(new IOException("Query failed: " + errorOf(response)));
+            }
+
+            Map<UUID, CapeEntry> out = new HashMap<>();
+            for (var element : JsonParser.parseString(response.body()).getAsJsonObject().getAsJsonArray("capes")) {
+                JsonObject cape = element.getAsJsonObject();
+                UUID uuid = UUID.fromString(cape.get("uuid").getAsString());
+                out.put(uuid, new CapeEntry(uuid, cape.get("hash").getAsString(), cape.get("frames").getAsInt()));
+            }
+            return out;
+        });
+    }
+
+    public static CompletableFuture<byte[]> downloadCape(UUID uuid) {
+        return token().thenApplyAsync(bearer -> {
+            HttpRequest request = HttpRequest.newBuilder(uri("/api/minecraft/capes/" + uuid + ".png"))
                     .timeout(TIMEOUT)
                     .header("Authorization", "Bearer " + bearer)
                     .GET()

@@ -8,12 +8,14 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.styna.stynastmc.classicbar.BarHud;
 import net.styna.stynastmc.classicbar.config.ClassicBarConfig;
+import net.styna.stynastmc.compat.ModCompat;
 import net.styna.stynastmc.config.tabs.ConfigTab;
 import net.styna.stynastmc.config.tabs.FontsTab;
 import net.styna.stynastmc.config.tabs.HomeTab;
 import net.styna.stynastmc.config.tabs.MufflerTab;
 import net.styna.stynastmc.config.tabs.SkinTab;
 import net.styna.stynastmc.config.tabs.Tab;
+import net.styna.stynastmc.firstperson.FirstPersonConfig;
 import net.styna.stynastmc.freecam.FreecamConfigImpl;
 import net.styna.stynastmc.tweaks.TweaksConfig;
 import net.styna.stynastmc.ui.UiTabScreen;
@@ -47,6 +49,9 @@ public class StynaConfigScreen extends UiTabScreen {
                 new ConfigTab(Component.translatable("stynastmc.configuration.zoom"), ZoomConfig.SPEC, none),
                 new MufflerTab(),
                 new ConfigTab(Component.translatable("stynastmc.configuration.tweaks"), TweaksConfig.SPEC, none)));
+        if (!ModCompat.isLoaded(ModCompat.FIRST_PERSON)) {
+            tabs.add(new ConfigTab(Component.translatable("stynastmc.configuration.firstperson"), FirstPersonConfig.SPEC, none));
+        }
         ADDON_TABS.forEach(factory -> tabs.add(factory.apply(this)));
         setTabs(tabs, tab);
         lastTab = current;

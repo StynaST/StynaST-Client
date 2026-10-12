@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.styna.stynastmc.firstperson.mixin",
+  "plugin": "net.styna.stynastmc.compat.CompatMixinPlugin",
+  "client": [
+    "AvatarRendererMixin",
+    "CustomHeadLayerMixin",
+    "EntityAccessor",
+    "FirstPersonHandsAndItemsMixin",
+    "FirstPersonHandsAndItemsRendererMixin",
+    "FishingHookRendererMixin",
+    "HumanoidModelMixin",
+    "ItemInHandLayerMixin",
+    "LevelExtractorMixin",
+    "LivingEntityMixin",
+    "LivingEntityRendererMixin",
+    "LivingEntityRenderStateMixin",
+    "StuckInBodyLayerMixin",
+    "WingsLayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
