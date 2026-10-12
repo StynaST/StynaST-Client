@@ -1,0 +1,38 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.styna.stynastmc.mixin",
+  "refmap": "mixins.stynastmc.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "AbstractClientPlayerMixin",
+    "BlockShulkerBoxMixin",
+    "EntityMixin",
+    "EntityPlayerMixin",
+    "EntityRendererMixin",
+    "FontRendererMixin",
+    "GuiNewChatAccessor",
+    "GuiNewChatMixin",
+    "GuiStatsAccessor",
+    "ImageBufferDownloadMixin",
+    "ItemRendererAccessor",
+    "ItemRendererMixin",
+    "LayerArrowMixin",
+    "LayerBipedArmorMixin",
+    "MinecraftAccessor",
+    "MinecraftMixin",
+    "ModelBipedMixin",
+    "NetworkPlayerInfoMixin",
+    "PlayerControllerMPMixin",
+    "RenderFishMixin",
+    "RenderGlobalMixin",
+    "RenderPlayerFirstPersonMixin",
+    "RenderPlayerMixin",
+    "SoundManagerMixin",
+    "TextureManagerAccessor",
+    "TextureMapAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

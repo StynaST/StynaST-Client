@@ -1,0 +1,21 @@
+// You may write any gradle buildscript component in this file
+// This file is automatically applied after build.gradle + dependencies.gradle is ran
+
+// If you wish to use the default helper methods, uncomment the line below
+apply from: 'gradle/scripts/helpers.gradle'
+
+// Same release name scheme as the modern versions.
+tasks.named('reobfJar').configure {
+    archiveFileName.set("StynaSTMC-${propertyString('mod_version')}+1.12.2-forge.jar")
+}
+
+tasks.register('publishRelease', PublishForgejoRelease) {
+    group = 'publishing'
+    description = 'Builds the Forge jar and uploads it as a Forgejo release.'
+    dependsOn 'build'
+    serverUrl = 'https://code.styna.net'
+    repo = 'Minecraft/StynaST-Client'
+    tag = "v${propertyString('mod_version')}+1.12.2"
+    repoDir = layout.projectDirectory
+    jars.from("build/libs/StynaSTMC-${propertyString('mod_version')}+1.12.2-forge.jar")
+}
