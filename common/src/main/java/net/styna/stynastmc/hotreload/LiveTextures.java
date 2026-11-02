@@ -41,9 +41,11 @@ public final class LiveTextures {
         }
         List<TextureAtlasSprite> found = new ArrayList<>();
         for (AbstractTexture texture : textures()) {
-            if (!(texture instanceof TextureAtlas atlas)) {
+            // Modded atlas subclasses can stitch lazily on lookup and crash outside a world.
+            if (texture.getClass() != TextureAtlas.class) {
                 continue;
             }
+            TextureAtlas atlas = (TextureAtlas) texture;
             try {
                 for (String name : names) {
                     TextureAtlasSprite sprite = atlas.getSprite(Identifier.fromNamespaceAndPath(namespace, name));
