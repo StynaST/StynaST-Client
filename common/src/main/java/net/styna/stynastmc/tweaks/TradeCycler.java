@@ -19,6 +19,7 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.inventory.MerchantMenu;
@@ -204,12 +205,22 @@ public final class TradeCycler {
             }
             for (Object2IntMap.Entry<Holder<Enchantment>> entry : stored.entrySet()) {
                 Integer min = entry.getKey().unwrapKey().map(key -> targets.get(key.identifier().toString())).orElse(null);
-                if (min != null && entry.getIntValue() >= min) {
+                if (min != null && entry.getIntValue() >= min && cheap(offer, entry.getKey(), entry.getIntValue())) {
                     return Enchantment.getFullname(entry.getKey(), entry.getIntValue());
                 }
             }
         }
         return null;
+    }
+
+    // Vanilla price is 2 + 3*level + rand(5 + 10*level), doubled for treasure, capped at 64.
+    // Base cost ignores cure/Hero of the Village discounts and demand.
+    private static boolean cheap(MerchantOffer offer, Holder<Enchantment> enchantment, int level) {
+        int floor = 2 + 3 * level;
+        if (enchantment.is(EnchantmentTags.DOUBLE_TRADE_PRICE)) {
+            floor *= 2;
+        }
+        return offer.getBaseCostA().getCount() <= Math.min(floor, 64) + TweaksConfig.PRICE_SLACK.get();
     }
 
     private static void found(Component book) {

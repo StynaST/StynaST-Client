@@ -26,6 +26,8 @@ import net.styna.stynastmc.fonts.FontsConfig;
 import net.styna.stynastmc.hotreload.HotReload;
 import net.styna.stynastmc.hotreload.SkinTotem;
 import net.styna.stynastmc.freecam.FreecamConfigImpl;
+import net.styna.stynastmc.pickups.PickupConfig;
+import net.styna.stynastmc.pickups.PickupNotifications;
 import net.styna.stynastmc.muffler.Muffler;
 import net.styna.stynastmc.platform.Platform;
 import net.styna.stynastmc.skins.SkinsBridge;
@@ -65,6 +67,7 @@ public final class StynaSTMCClient {
             new Config(ZoomConfig.SPEC, "zoom", "zoom", NONE, NONE),
             unless(ModCompat.FIRST_PERSON, new Config(FirstPersonConfig.SPEC, "firstperson", "firstperson", NONE, NONE)),
             new Config(TweaksConfig.SPEC, "tweaks", "tweaks", NONE, NONE),
+            unless(ModCompat.LOOT_JOURNAL, new Config(PickupConfig.SPEC, "pickups", "pickups", NONE, NONE)),
             unless(ModCompat.ENCHANT_DESCRIPTIONS, new Config(EnchantDescriptionsConfig.SPEC, "enchantdescriptions", "enchantdescriptions", NONE, NONE)),
             unless(ModCompat.SHULKER_BOX_TOOLTIP, new Config(ContainerPreviewConfig.SPEC, "containerpreview", "containerpreview", NONE, NONE)),
             unless(ModCompat.CHAT_HEADS, new Config(ChatHeadsConfig.SPEC, "chatheads", "chatheads", NONE, NONE)))
@@ -127,6 +130,7 @@ public final class StynaSTMCClient {
         RemoteSkins.clear();
         Capes.onLoggingOut();
         ClearSpam.onDisconnect();
+        PickupNotifications.clear();
         net.styna.stynastmc.classicbar.network.ClassicBarNetwork.presentOnServer = false;
     }
 }

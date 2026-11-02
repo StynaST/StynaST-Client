@@ -12,6 +12,7 @@ public final class TweaksConfig {
     public static final StynaConfigSpec.BooleanValue NO_BOBBING;
     public static final StynaConfigSpec.ConfigValue<List<? extends String>> BOOK_TARGETS;
     public static final StynaConfigSpec.IntValue CYCLE_DELAY;
+    public static final StynaConfigSpec.IntValue PRICE_SLACK;
 
     private TweaksConfig() {
     }
@@ -37,6 +38,8 @@ public final class TweaksConfig {
                 .defineList("book_targets", () -> List.<String>of(), () -> "minecraft:efficiency=5", String.class::isInstance);
         CYCLE_DELAY = builder.comment("Ticks to wait after new offers arrive before cycling again.")
                 .defineInRange("cycle_delay", 2, 0, 20);
+        PRICE_SLACK = builder.comment("Max emeralds above the lowest possible price a wanted book may cost. 64 accepts any price.")
+                .defineInRange("price_slack", 3, 0, 64);
         builder.pop();
 
         SPEC = builder.build();
