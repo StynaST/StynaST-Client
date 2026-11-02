@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.styna.stynastmc.pickups.mixin",
+  "plugin": "net.styna.stynastmc.compat.CompatMixinPlugin",
+  "client": [
+    "ClientPacketListenerMixin",
+    "HudMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

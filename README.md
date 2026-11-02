@@ -25,4 +25,5 @@ Features:
   * First person body: see your own body, arms and items when looking down (F6 toggles, port of FirstPersonModel)
   * Darkness effect (wardens, sculk shriekers) no longer darkens the screen
   * Librarian auto cycle with Trade Cycling: pick wanted books, press F7 in the trade screen and it rerolls until one shows up
+  * Pickup notifications: animated feed of picked up items and experience with the carried total, stacking from a screen corner
 

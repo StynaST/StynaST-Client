@@ -17,6 +17,7 @@ import net.styna.stynastmc.config.tabs.SkinTab;
 import net.styna.stynastmc.config.tabs.Tab;
 import net.styna.stynastmc.firstperson.FirstPersonConfig;
 import net.styna.stynastmc.freecam.FreecamConfigImpl;
+import net.styna.stynastmc.pickups.PickupConfig;
 import net.styna.stynastmc.tweaks.TweaksConfig;
 import net.styna.stynastmc.ui.UiTabScreen;
 import net.styna.stynastmc.zoom.config.ZoomConfig;
@@ -49,6 +50,9 @@ public class StynaConfigScreen extends UiTabScreen {
                 new ConfigTab(Component.translatable("stynastmc.configuration.zoom"), ZoomConfig.SPEC, none),
                 new MufflerTab(),
                 new ConfigTab(Component.translatable("stynastmc.configuration.tweaks"), TweaksConfig.SPEC, none)));
+        if (!ModCompat.isLoaded(ModCompat.LOOT_JOURNAL)) {
+            tabs.add(new ConfigTab(Component.translatable("stynastmc.configuration.pickups"), PickupConfig.SPEC, none));
+        }
         if (!ModCompat.isLoaded(ModCompat.FIRST_PERSON)) {
             tabs.add(new ConfigTab(Component.translatable("stynastmc.configuration.firstperson"), FirstPersonConfig.SPEC, none));
         }

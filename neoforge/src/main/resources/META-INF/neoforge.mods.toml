@@ -40,6 +40,9 @@ config="${mod_id}.tweaks.mixins.json"
 [[mixins]]
 config="${mod_id}.firstperson.mixins.json"
 
+[[mixins]]
+config="${mod_id}.pickups.mixins.json"
+
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"
