@@ -233,6 +233,7 @@
   "stynastmc.configuration.items": "Items",
   "stynastmc.configuration.xp": "Experience",
   "stynastmc.configuration.show_total": "Show total carried",
+  "stynastmc.configuration.other_mods": "Backpack and modded pickups",
   "stynastmc.configuration.layout": "Layout",
   "stynastmc.configuration.corner": "Corner",
   "stynastmc.configuration.offset_x": "Side offset",

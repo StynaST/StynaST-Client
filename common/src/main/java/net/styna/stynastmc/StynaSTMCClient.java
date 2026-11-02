@@ -28,6 +28,7 @@ import net.styna.stynastmc.hotreload.SkinTotem;
 import net.styna.stynastmc.freecam.FreecamConfigImpl;
 import net.styna.stynastmc.pickups.PickupConfig;
 import net.styna.stynastmc.pickups.PickupNotifications;
+import net.styna.stynastmc.pickups.PickupTracker;
 import net.styna.stynastmc.muffler.Muffler;
 import net.styna.stynastmc.platform.Platform;
 import net.styna.stynastmc.skins.SkinsBridge;
@@ -124,6 +125,7 @@ public final class StynaSTMCClient {
         RemoteSkins.tick();
         RemoteCapes.tick();
         SkinTotem.tick(minecraft);
+        PickupTracker.tick(minecraft);
     }
 
     public static void onLoggingOut() {

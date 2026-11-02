@@ -8,6 +8,7 @@ public final class PickupConfig {
     public static final StynaConfigSpec.BooleanValue ITEMS;
     public static final StynaConfigSpec.BooleanValue XP;
     public static final StynaConfigSpec.BooleanValue SHOW_TOTAL;
+    public static final StynaConfigSpec.BooleanValue OTHER_MODS;
     public static final StynaConfigSpec.EnumValue<Corner> CORNER;
     public static final StynaConfigSpec.IntValue X_OFFSET;
     public static final StynaConfigSpec.IntValue Y_OFFSET;
@@ -41,6 +42,8 @@ public final class PickupConfig {
                 .define("xp", true);
         SHOW_TOTAL = builder.comment("Show how many of the item you now carry.")
                 .define("show_total", true);
+        OTHER_MODS = builder.comment("Also catch items other mods pick up without the vanilla pickup, like backpack pickup upgrades.")
+                .define("other_mods", true);
         builder.pop();
 
         builder.push("layout");

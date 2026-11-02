@@ -45,7 +45,6 @@ public final class PickupNotifications {
     private static final int TOTAL_COLOR = 0xFFDDDDDD;
     private static final int EPIC_COLOR = 0xFFC46BFF;
     private static final int XP_COLOR = 0xFFC5E862;
-    private static final ItemStack XP_ICON = new ItemStack(Items.EXPERIENCE_BOTTLE);
     private static final List<Entry> ENTRIES = new ArrayList<>();
     private static long lastFrame;
 
@@ -66,8 +65,16 @@ public final class PickupNotifications {
         }
     }
 
+    /** Items picked up without a take packet, see {@link PickupTracker}. */
+    public static void onItems(ItemStack stack, int amount) {
+        if (PickupConfig.on(PickupConfig.ENABLED) && PickupConfig.ITEMS.get() && !stack.isEmpty() && amount > 0) {
+            add(stack, amount);
+        }
+    }
+
     public static void clear() {
         ENTRIES.clear();
+        PickupTracker.clear();
     }
 
     private static void add(ItemStack stack, int amount) {
@@ -363,7 +370,8 @@ public final class PickupNotifications {
         }
 
         ItemStack icon() {
-            return xp() ? XP_ICON : stack;
+            // Built per use: item components stay unbound until a world's registries load, and change per world.
+            return xp() ? new ItemStack(Items.EXPERIENCE_BOTTLE) : stack;
         }
 
         boolean matches(ItemStack other) {
