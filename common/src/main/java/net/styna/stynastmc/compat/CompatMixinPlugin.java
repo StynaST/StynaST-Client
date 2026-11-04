@@ -19,8 +19,16 @@ public final class CompatMixinPlugin implements IMixinConfigPlugin {
             "net.styna.stynastmc.tweaks.mixin.ItemContainerContentsMixin", ModCompat.SHULKER_BOX_TOOLTIP,
             "net.styna.stynastmc.tweaks.mixin.ContainerPreviewItemStackMixin", ModCompat.SHULKER_BOX_TOOLTIP);
 
+    // Mixins into other mods, only applied when that mod is present.
+    private static final Map<String, String> TARGETS = Map.of(
+            "net.styna.stynastmc.lightoverlay.mixin.MoreOverlaysMixin", ModCompat.MORE_OVERLAYS);
+
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        String target = TARGETS.get(mixinClassName);
+        if (target != null) {
+            return ModCompat.isLoaded(target);
+        }
         String modId = mixinClassName.startsWith(CHAT_HEADS_PACKAGE) ? ModCompat.CHAT_HEADS
                 : mixinClassName.startsWith(FIRST_PERSON_PACKAGE) ? ModCompat.FIRST_PERSON
                 : mixinClassName.startsWith(PICKUPS_PACKAGE) ? ModCompat.LOOT_JOURNAL : MIXINS.get(mixinClassName);

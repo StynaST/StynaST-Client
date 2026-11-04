@@ -10,6 +10,7 @@ public final class TweaksConfig {
     public static final StynaConfigSpec.BooleanValue DURABILITY_TOOLTIP;
     public static final StynaConfigSpec.BooleanValue NO_FOG;
     public static final StynaConfigSpec.BooleanValue NO_BOBBING;
+    public static final StynaConfigSpec.BooleanValue HIDE_ARMOR;
     public static final StynaConfigSpec.ConfigValue<List<? extends String>> BOOK_TARGETS;
     public static final StynaConfigSpec.IntValue CYCLE_DELAY;
     public static final StynaConfigSpec.IntValue PRICE_SLACK;
@@ -31,6 +32,11 @@ public final class TweaksConfig {
                 .define("no_fog", true);
         NO_BOBBING = builder.comment("Disable view bobbing while walking.")
                 .define("no_bobbing", false);
+        builder.pop();
+
+        builder.push("player");
+        HIDE_ARMOR = builder.comment("Hide all worn armor on your player. Elytra and heads stay visible.")
+                .define("hide_armor", false);
         builder.pop();
 
         builder.push("trading");

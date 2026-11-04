@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.styna.stynastmc.lightoverlay.mixin",
+  "plugin": "net.styna.stynastmc.compat.CompatMixinPlugin",
+  "client": [
+    "LevelRendererMixin",
+    "MoreOverlaysMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

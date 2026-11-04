@@ -38,6 +38,9 @@ config="${mod_id}.hotreload.mixins.json"
 config="${mod_id}.tweaks.mixins.json"
 
 [[mixins]]
+config="${mod_id}.lightoverlay.mixins.json"
+
+[[mixins]]
 config="${mod_id}.firstperson.mixins.json"
 
 [[mixins]]

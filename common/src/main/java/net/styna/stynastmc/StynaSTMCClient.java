@@ -25,6 +25,7 @@ import net.styna.stynastmc.fonts.FontsBridge;
 import net.styna.stynastmc.fonts.FontsConfig;
 import net.styna.stynastmc.hotreload.HotReload;
 import net.styna.stynastmc.hotreload.SkinTotem;
+import net.styna.stynastmc.lightoverlay.LightOverlay;
 import net.styna.stynastmc.freecam.FreecamConfigImpl;
 import net.styna.stynastmc.pickups.PickupConfig;
 import net.styna.stynastmc.pickups.PickupNotifications;
@@ -97,6 +98,7 @@ public final class StynaSTMCClient {
         keys.add(ConfigKey.OPEN);
         keys.add(DebugPauseKey.KEY);
         keys.add(TradeCycler.KEY);
+        keys.add(LightOverlay.KEY);
         return keys;
     }
 
@@ -119,6 +121,7 @@ public final class StynaSTMCClient {
         FirstPerson.tick(minecraft);
         DebugPauseKey.tick(minecraft);
         TradeCycler.tick(minecraft);
+        LightOverlay.tick(minecraft);
         Muffler.tick(minecraft);
         HotReload.tick(minecraft);
         CustomSkins.tick();

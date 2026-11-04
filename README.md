@@ -22,8 +22,10 @@ Features:
   * Better advancements screen (bigger tree, side panel listing missing and obtained criteria)
   * No fog
   * No view bobbing (toggle in Tweaks)
+  * Hide armor on your own player (toggle in Tweaks, Player section)
   * First person body: see your own body, arms and items when looking down (F6 toggles, port of FirstPersonModel)
   * Darkness effect (wardens, sculk shriekers) no longer darkens the screen
   * Librarian auto cycle with Trade Cycling: pick wanted books, press F7 in the trade screen and it rerolls until one shows up
   * Pickup notifications: animated feed of picked up items and experience with the carried total, stacking from a screen corner
+  * Light level overlay: block light numbers and spawnable markers (F7 toggles, port of MiniHUD's overlay; replaces More Overlays' one when installed)
 
