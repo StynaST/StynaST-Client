@@ -1,5 +1,6 @@
 package net.styna.stynastmc.photomode;
 
+import net.styna.stynastmc.BuildFlags;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +127,7 @@ public final class PhotoMode {
     }
 
     private static void enter(Minecraft mc) {
-        if (mc.player == null || mc.level == null || mc.gameMode == null || Freecam.isEnabled()) {
+        if (mc.player == null || mc.level == null || mc.gameMode == null || BuildFlags.FREECAM && Freecam.isEnabled()) {
             return;
         }
         Camera camera = mc.gameRenderer.mainCamera();

@@ -15,5 +15,6 @@ tasks.register('publishRelease', PublishForgejoRelease) {
     repo = 'Minecraft/StynaST-Client'
     tag = "v${mod_version}"
     repoDir = layout.projectDirectory
-    jars.from(['fabric', 'neoforge'].collect { "$it/build/libs/StynaSTMC-${mod_version}+${minecraft_version}-${it}.jar" })
+    def variant = (findProperty('freecam') ?: 'true').toString().toBoolean() ? '' : '-nofreecam'
+    jars.from(['fabric', 'neoforge'].collect { "$it/build/libs/StynaSTMC-${mod_version}+${minecraft_version}-${it}${variant}.jar" })
 }

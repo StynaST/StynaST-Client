@@ -13,8 +13,8 @@
     "modmenu": ["net.styna.stynastmc.fabric.StynaSTMCModMenu"]
   },
   "mixins": [
-    "${mod_id}.mixins.json",
-    "${mod_id}.fonts.mixins.json",
+<% if (freecam) { %>    "${mod_id}.mixins.json",
+<% } %>    "${mod_id}.fonts.mixins.json",
     "${mod_id}.skins.mixins.json",
     "${mod_id}.zoom.mixins.json",
     "${mod_id}.muffler.mixins.json",

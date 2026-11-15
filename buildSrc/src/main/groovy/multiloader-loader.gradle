@@ -24,11 +24,17 @@ dependencies {
 tasks.named('compileJava', JavaCompile) {
     dependsOn(configurations.commonJava)
     source(configurations.commonJava)
+    if (!freecamEnabled) {
+        exclude 'net/styna/stynastmc/freecam/**'
+    }
 }
 
 processResources {
     dependsOn(configurations.commonResources)
     from(configurations.commonResources)
+    if (!freecamEnabled) {
+        exclude "${mod_id}.mixins.json"
+    }
 }
 
 tasks.named('sourcesJar', Jar) {

@@ -1,5 +1,6 @@
 package net.styna.stynastmc.config.tabs;
 
+import net.styna.stynastmc.BuildFlags;
 import net.minecraft.util.Util;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -49,10 +50,13 @@ public class HomeTab implements Tab {
         quick.style(Ui.QUICK_BACKGROUND, 0, 5);
         int qx = quick.x + 5;
         qx = quickButton(quick, qx, Identifier.withDefaultNamespace("hud/heart/full"), Component.translatable("stynastmc.configuration.classicbar"), 1);
-        qx = quickButton(quick, qx, Identifier.withDefaultNamespace("icon/video_link"), Component.translatable("stynastmc.configuration.freecam"), 2);
-        qx = quickButton(quick, qx, Identifier.withDefaultNamespace("icon/language"), Component.translatable("stynastmc.ui.fonts"), 3);
-        qx = quickButton(quick, qx, Identifier.withDefaultNamespace("spectator/teleport_to_player"), Component.translatable("stynastmc.ui.skin"), 4);
-        qx = quickButton(quick, qx, Identifier.withDefaultNamespace("icon/search"), Component.translatable("stynastmc.configuration.zoom"), 5);
+        if (BuildFlags.FREECAM) {
+            qx = quickButton(quick, qx, Identifier.withDefaultNamespace("icon/video_link"), Component.translatable("stynastmc.configuration.freecam"), 2);
+        }
+        int shift = StynaConfigScreen.FREECAM_TABS;
+        qx = quickButton(quick, qx, Identifier.withDefaultNamespace("icon/language"), Component.translatable("stynastmc.ui.fonts"), 2 + shift);
+        qx = quickButton(quick, qx, Identifier.withDefaultNamespace("spectator/teleport_to_player"), Component.translatable("stynastmc.ui.skin"), 3 + shift);
+        qx = quickButton(quick, qx, Identifier.withDefaultNamespace("icon/search"), Component.translatable("stynastmc.configuration.zoom"), 4 + shift);
         qx = quickButton(quick, qx, Identifier.withDefaultNamespace("icon/music_notes"), Component.translatable("stynastmc.ui.muffler"), StynaConfigScreen.MUFFLER_TAB);
         UiWidgets.Button folder = quick.add(new UiWidgets.Button(Component.empty(), () -> Util.getPlatform().openPath(GoogleFonts.DIR.getParent()))
                 .icon(Ui.FOLDER));
@@ -66,7 +70,9 @@ public class HomeTab implements Tab {
             return applied == null ? Component.translatable("stynastmc.ui.vanilla_font")
                     : Component.literal(applied.family() + " " + GoogleFonts.variantName(applied.variant()));
         });
-        info(home, "stynastmc.ui.freecam_flight", () -> Component.literal(ModConfig.get().getFlightMode().name()));
+        if (BuildFlags.FREECAM) {
+            info(home, "stynastmc.ui.freecam_flight", () -> Component.literal(ModConfig.get().getFlightMode().name()));
+        }
         info(home, "stynastmc.ui.clearspam", () -> onOff(ClearSpamConfig.SPEC.isLoaded() && ClearSpamConfig.ENABLED.get()));
         info(home, "stynastmc.ui.muffler", () -> Muffler.enabled
                 ? Component.translatable("stynastmc.ui.muffler.count", Muffler.global.size(), Muffler.anchors.size()) : onOff(false));

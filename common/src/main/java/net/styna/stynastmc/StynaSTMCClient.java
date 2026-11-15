@@ -62,7 +62,7 @@ public final class StynaSTMCClient {
     public static final List<Config> CONFIGS = Stream.of(
             new Config(ClassicBarConfig.SPEC, "bars", "classicbar", BarHud::reload, BarHud::reload),
             new Config(ClearSpamConfig.SPEC, "clearspam", "clearspam", ClearSpam::syncConfig, ClearSpam::syncConfig),
-            new Config(FreecamConfigImpl.SPEC, "freecam", "freecam", NONE, NONE),
+            BuildFlags.FREECAM ? new Config(FreecamConfigImpl.SPEC, "freecam", "freecam", NONE, NONE) : null,
             new Config(FontsConfig.SPEC, "fonts", "fonts", FontsBridge::onConfigLoading, NONE),
             new Config(SkinsConfig.SPEC, "skins", "skins", NONE, SkinsBridge::onConfigReloading),
             new Config(CapesConfig.SPEC, "capes", "capes", NONE, Capes::onConfigReloading),
@@ -89,7 +89,9 @@ public final class StynaSTMCClient {
 
     public static List<KeyMapping> keyMappings() {
         List<KeyMapping> keys = new ArrayList<>();
-        ModBindings.forEach(keys::add);
+        if (BuildFlags.FREECAM) {
+            ModBindings.forEach(keys::add);
+        }
         keys.add(Zoom.KEY);
         if (!ModCompat.isLoaded(ModCompat.FIRST_PERSON)) {
             keys.add(FirstPerson.KEY);
@@ -104,7 +106,9 @@ public final class StynaSTMCClient {
     }
 
     public static void preTick(Minecraft minecraft) {
-        Freecam.preTick(minecraft);
+        if (BuildFlags.FREECAM) {
+            Freecam.preTick(minecraft);
+        }
     }
 
     public static void postTick(Minecraft minecraft) {
@@ -117,7 +121,9 @@ public final class StynaSTMCClient {
                 }
             }
         }
-        Freecam.postTick(minecraft);
+        if (BuildFlags.FREECAM) {
+            Freecam.postTick(minecraft);
+        }
         PhotoMode.tick(minecraft);
         ConfigKey.tick(minecraft);
         FirstPerson.tick(minecraft);

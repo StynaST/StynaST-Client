@@ -1,5 +1,6 @@
 package net.styna.stynastmc.firstperson;
 
+import net.styna.stynastmc.BuildFlags;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,7 +94,7 @@ public final class FirstPerson {
     /** Whether the body should be drawn this frame. */
     public static boolean shouldApply() {
         LocalPlayer player = mc().player;
-        if (!isEnabled() || player == null || player.isSpectator() || Freecam.isEnabled()
+        if (!isEnabled() || player == null || player.isSpectator() || BuildFlags.FREECAM && Freecam.isEnabled()
                 || mc().getCameraEntity() != player || mc().options.getCameraType() != CameraType.FIRST_PERSON) {
             return false;
         }

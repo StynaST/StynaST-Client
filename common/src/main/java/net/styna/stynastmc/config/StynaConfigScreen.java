@@ -1,5 +1,6 @@
 package net.styna.stynastmc.config;
 
+import net.styna.stynastmc.BuildFlags;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -23,7 +24,8 @@ import net.styna.stynastmc.ui.UiTabScreen;
 import net.styna.stynastmc.zoom.config.ZoomConfig;
 
 public class StynaConfigScreen extends UiTabScreen {
-    public static final int MUFFLER_TAB = 6;
+    public static final int FREECAM_TABS = BuildFlags.FREECAM ? 1 : 0;
+    public static final int MUFFLER_TAB = 5 + FREECAM_TABS;
     public static final int TWEAKS_TAB = 7;
     private static final List<Function<StynaConfigScreen, Tab>> ADDON_TABS = new ArrayList<>();
     private static int lastTab;
@@ -44,7 +46,6 @@ public class StynaConfigScreen extends UiTabScreen {
         List<Tab> tabs = new ArrayList<>(List.of(
                 new HomeTab(this),
                 new ConfigTab(Component.translatable("stynastmc.configuration.classicbar"), ClassicBarConfig.SPEC, BarHud::reload),
-                new ConfigTab(Component.translatable("stynastmc.configuration.freecam"), FreecamConfigImpl.SPEC, none),
                 new FontsTab(this),
                 new SkinTab(this),
                 new ConfigTab(Component.translatable("stynastmc.configuration.zoom"), ZoomConfig.SPEC, none),
@@ -52,6 +53,9 @@ public class StynaConfigScreen extends UiTabScreen {
                 new ConfigTab(Component.translatable("stynastmc.configuration.tweaks"), TweaksConfig.SPEC, none)));
         if (!ModCompat.isLoaded(ModCompat.LOOT_JOURNAL)) {
             tabs.add(new ConfigTab(Component.translatable("stynastmc.configuration.pickups"), PickupConfig.SPEC, none));
+        }
+        if (BuildFlags.FREECAM) {
+            tabs.add(2, new ConfigTab(Component.translatable("stynastmc.configuration.freecam"), FreecamConfigImpl.SPEC, none));
         }
         if (!ModCompat.isLoaded(ModCompat.FIRST_PERSON)) {
             tabs.add(new ConfigTab(Component.translatable("stynastmc.configuration.firstperson"), FirstPersonConfig.SPEC, none));
