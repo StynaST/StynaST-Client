@@ -65,16 +65,8 @@ public final class PickupNotifications {
         }
     }
 
-    /** Items picked up without a take packet, see {@link PickupTracker}. */
-    public static void onItems(ItemStack stack, int amount) {
-        if (PickupConfig.on(PickupConfig.ENABLED) && PickupConfig.ITEMS.get() && !stack.isEmpty() && amount > 0) {
-            add(stack, amount);
-        }
-    }
-
     public static void clear() {
         ENTRIES.clear();
-        PickupTracker.clear();
     }
 
     private static void add(ItemStack stack, int amount) {

@@ -44,6 +44,9 @@ import org.jspecify.annotations.Nullable;
 /** Advancement tree on the left, criteria and progress for the picked advancement on the right. */
 public class AdvancementsViewScreen extends UiScreen implements ClientAdvancements.Listener {
     private static final int TAB_SIZE = 24;
+    private static final int SIDEBAR_PAD = 2;
+    // Panel reserves 6px for its scrollbar.
+    private static final int SIDEBAR_WIDTH = TAB_SIZE + SIDEBAR_PAD * 2 + 6;
     private static final int ROW_HEIGHT = 20;
     private static final int DONE = 0xFF55FF55;
     private static final int PARTIAL = 0xFFFFDD55;
@@ -61,6 +64,8 @@ public class AdvancementsViewScreen extends UiScreen implements ClientAdvancemen
     private final Map<AdvancementHolder, AdvancementProgress> progress = new HashMap<>();
     private UiPanel detail;
     private double detailScroll;
+    private UiPanel sidebar;
+    private double sidebarScroll;
     private int treeWidth;
     private int treeHeight;
 
@@ -95,22 +100,23 @@ public class AdvancementsViewScreen extends UiScreen implements ClientAdvancemen
         Component heading = title.copy().append(Component.literal("  " + done + "/" + total).withColor(Ui.MUTED & 0xFFFFFF));
         root.add(new UiWidgets.Label(heading, Ui.WHITE)).bounds(margin, top, width - margin * 2, 12);
 
-        int tx = margin;
-        int tabY = top + 14;
-        for (Category category : categories.values()) {
-            root.add(new CategoryTab(category)).bounds(tx, tabY, TAB_SIZE, TAB_SIZE);
-            tx += TAB_SIZE + 2;
-        }
-
-        int bodyY = tabY + TAB_SIZE + 4;
+        int bodyY = top + 16;
         int bodyH = height - bodyY - 30;
-        treeWidth = width - margin * 2 - detailWidth - Ui.GAP * 2;
+        sidebar = root.add(new UiPanel()).bounds(margin, bodyY, SIDEBAR_WIDTH, bodyH);
+        sidebar.style(Ui.PANEL_BACKGROUND, Ui.PANEL_OUTLINE, SIDEBAR_PAD);
+        for (Category category : categories.values()) {
+            sidebar.place(new CategoryTab(category), TAB_SIZE, 2);
+        }
+        sidebar.setScroll(sidebarScroll);
+
+        int treeX = margin + SIDEBAR_WIDTH + Ui.GAP;
+        treeWidth = width - margin * 2 - SIDEBAR_WIDTH - detailWidth - Ui.GAP * 2;
         treeHeight = bodyH;
         if (current == null) {
             UiWidgets.Label empty = root.add(new UiWidgets.Label(Component.translatable("advancements.empty"), Ui.MUTED));
-            empty.bounds(margin, bodyY + bodyH / 2 - 6, treeWidth, 12);
+            empty.bounds(treeX, bodyY + bodyH / 2 - 6, treeWidth, 12);
         } else {
-            root.add(new TreeView(current)).bounds(margin, bodyY, treeWidth, bodyH);
+            root.add(new TreeView(current)).bounds(treeX, bodyY, treeWidth, bodyH);
         }
 
         detail = root.add(new UiPanel()).bounds(width - margin - detailWidth, bodyY, detailWidth, bodyH);
@@ -234,6 +240,9 @@ public class AdvancementsViewScreen extends UiScreen implements ClientAdvancemen
     public void rebuild() {
         if (detail != null) {
             detailScroll = detail.scroll();
+        }
+        if (sidebar != null) {
+            sidebarScroll = sidebar.scroll();
         }
         super.rebuild();
     }
@@ -481,9 +490,9 @@ public class AdvancementsViewScreen extends UiScreen implements ClientAdvancemen
             Ui.outline(g, x, y, width, height, active ? Ui.FOCUS_OUTLINE : contains(mx, my) ? Ui.WHITE : Ui.PANEL_OUTLINE);
             g.fakeItem(category.icon, x + (width - 16) / 2, y + (height - 16) / 2 - 1);
             if (category.total > 0) {
-                int bar = (width - 4) * category.done / category.total;
-                Ui.fill(g, x + 2, endY() - 3, width - 4, 1, Ui.BLACK);
-                Ui.fill(g, x + 2, endY() - 3, bar, 1, category.done == category.total ? DONE : PARTIAL);
+                int bar = (height - 4) * category.done / category.total;
+                Ui.fill(g, endX() - 3, y + 2, 1, height - 4, Ui.BLACK);
+                Ui.fill(g, endX() - 3, endY() - 2 - bar, 1, bar, category.done == category.total ? DONE : PARTIAL);
             }
         }
 

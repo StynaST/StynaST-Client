@@ -21,7 +21,8 @@ public final class CompatMixinPlugin implements IMixinConfigPlugin {
 
     // Mixins into other mods, only applied when that mod is present.
     private static final Map<String, String> TARGETS = Map.of(
-            "net.styna.stynastmc.lightoverlay.mixin.MoreOverlaysMixin", ModCompat.MORE_OVERLAYS);
+            "net.styna.stynastmc.lightoverlay.mixin.MoreOverlaysMixin", ModCompat.MORE_OVERLAYS,
+            "net.styna.stynastmc.tweaks.mixin.IrisPipelinesMixin", ModCompat.MAHOU_TSUKAI);
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {

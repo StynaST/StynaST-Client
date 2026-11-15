@@ -46,6 +46,9 @@ config="${mod_id}.firstperson.mixins.json"
 [[mixins]]
 config="${mod_id}.pickups.mixins.json"
 
+[[mixins]]
+config="${mod_id}.photomode.mixins.json"
+
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"

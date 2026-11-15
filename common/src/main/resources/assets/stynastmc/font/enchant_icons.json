@@ -1,0 +1,13 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "stynastmc:font/enchant_icons.png",
+      "ascent": 7,
+      "height": 8,
+      "chars": [
+        "\ue900\ue901\ue902\ue903\ue904\ue905\ue906\ue907\ue908\ue909\ue90a\ue90b\ue90c\ue90d\ue90e\ue90f\ue910\ue911"
+      ]
+    }
+  ]
+}

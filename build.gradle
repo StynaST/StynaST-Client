@@ -9,11 +9,11 @@ tasks.named('wrapper', Wrapper).configure {
 
 tasks.register('publishRelease', PublishForgejoRelease) {
     group = 'publishing'
-    description = 'Builds Fabric + NeoForge and uploads them as a Forgejo release.'
+    description = 'Builds Fabric + NeoForge and adds them to the shared mod-version release.'
     dependsOn ':fabric:build', ':neoforge:build'
     serverUrl = 'https://code.styna.net'
     repo = 'Minecraft/StynaST-Client'
-    tag = "v${mod_version}+${minecraft_version}"
+    tag = "v${mod_version}"
     repoDir = layout.projectDirectory
     jars.from(['fabric', 'neoforge'].collect { "$it/build/libs/StynaSTMC-${mod_version}+${minecraft_version}-${it}.jar" })
 }

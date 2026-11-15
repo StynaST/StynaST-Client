@@ -29,8 +29,8 @@ import net.styna.stynastmc.lightoverlay.LightOverlay;
 import net.styna.stynastmc.freecam.FreecamConfigImpl;
 import net.styna.stynastmc.pickups.PickupConfig;
 import net.styna.stynastmc.pickups.PickupNotifications;
-import net.styna.stynastmc.pickups.PickupTracker;
 import net.styna.stynastmc.muffler.Muffler;
+import net.styna.stynastmc.photomode.PhotoMode;
 import net.styna.stynastmc.platform.Platform;
 import net.styna.stynastmc.skins.SkinsBridge;
 import net.styna.stynastmc.skins.CustomSkins;
@@ -99,6 +99,7 @@ public final class StynaSTMCClient {
         keys.add(DebugPauseKey.KEY);
         keys.add(TradeCycler.KEY);
         keys.add(LightOverlay.KEY);
+        keys.add(PhotoMode.KEY);
         return keys;
     }
 
@@ -117,6 +118,7 @@ public final class StynaSTMCClient {
             }
         }
         Freecam.postTick(minecraft);
+        PhotoMode.tick(minecraft);
         ConfigKey.tick(minecraft);
         FirstPerson.tick(minecraft);
         DebugPauseKey.tick(minecraft);
@@ -128,10 +130,10 @@ public final class StynaSTMCClient {
         RemoteSkins.tick();
         RemoteCapes.tick();
         SkinTotem.tick(minecraft);
-        PickupTracker.tick(minecraft);
     }
 
     public static void onLoggingOut() {
+        PhotoMode.exit();
         RemoteSkins.clear();
         Capes.onLoggingOut();
         ClearSpam.onDisconnect();

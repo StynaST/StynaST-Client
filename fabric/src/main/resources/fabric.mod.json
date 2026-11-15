@@ -25,6 +25,7 @@
     "${mod_id}.lightoverlay.mixins.json",
     "${mod_id}.firstperson.mixins.json",
     "${mod_id}.pickups.mixins.json",
+    "${mod_id}.photomode.mixins.json",
     "${mod_id}.fabric.mixins.json"
   ],
   "accessWidener": "${mod_id}.classtweaker",

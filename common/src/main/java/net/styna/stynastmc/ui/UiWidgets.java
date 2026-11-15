@@ -1,6 +1,7 @@
 package net.styna.stynastmc.ui;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -324,6 +325,8 @@ public final class UiWidgets {
     public static class Slider extends UiElement {
         public double value;
         public Consumer<Double> onChange;
+        public double step = 0.01;
+        public Function<Double, Component> format = v -> Component.literal(Math.round(v * 100) + "%");
         private boolean dragging;
 
         public Slider(double value, Consumer<Double> onChange) {
@@ -339,7 +342,7 @@ public final class UiWidgets {
             int knobX = x + (int) ((width - 4) * value);
             Ui.fill(g, knobX, y, 4, height, hot ? Ui.KNOB_HOVER : Ui.KNOB);
             Ui.outline(g, x, y, width, height, hot ? Ui.FOCUS_OUTLINE : Ui.PANEL_OUTLINE);
-            Ui.centeredText(g, Component.literal(Math.round(value * 100) + "%"), x, y, width, height, Ui.WHITE);
+            Ui.centeredText(g, format.apply(value), x, y, width, height, Ui.WHITE);
         }
 
         @Override
@@ -369,7 +372,7 @@ public final class UiWidgets {
         }
 
         private void set(double v) {
-            v = Math.round(Math.clamp(v, 0.0, 1.0) * 100) / 100.0;
+            v = Math.round(Math.clamp(v, 0.0, 1.0) / step) * step;
             if (v != value) {
                 value = v;
                 onChange.accept(v);

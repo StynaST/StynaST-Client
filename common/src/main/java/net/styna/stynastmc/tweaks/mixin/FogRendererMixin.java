@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.fog.FogData;
 import net.minecraft.client.renderer.fog.FogRenderer;
 import net.minecraft.client.renderer.fog.environment.AtmosphericFogEnvironment;
 import net.minecraft.client.renderer.fog.environment.FogEnvironment;
+import net.styna.stynastmc.photomode.PhotoMode;
 import net.styna.stynastmc.tweaks.TweaksConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,7 +30,7 @@ public abstract class FogRendererMixin {
     private void stynastmc$noFog(FogEnvironment environment, FogData fog, Camera camera, ClientLevel level, float renderDistance,
             DeltaTracker deltaTracker, Operation<Void> original) {
         original.call(environment, fog, camera, level, renderDistance, deltaTracker);
-        stynastmc$clear = environment instanceof AtmosphericFogEnvironment && TweaksConfig.on(TweaksConfig.NO_FOG);
+        stynastmc$clear = PhotoMode.isActive() ? !PhotoMode.fog() : environment instanceof AtmosphericFogEnvironment && TweaksConfig.on(TweaksConfig.NO_FOG);
         if (stynastmc$clear) {
             fog.environmentalStart = STYNASTMC_FAR;
             fog.environmentalEnd = STYNASTMC_FAR;

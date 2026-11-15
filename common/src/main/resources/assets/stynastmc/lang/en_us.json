@@ -233,7 +233,6 @@
   "stynastmc.configuration.items": "Items",
   "stynastmc.configuration.xp": "Experience",
   "stynastmc.configuration.show_total": "Show total carried",
-  "stynastmc.configuration.other_mods": "Backpack and modded pickups",
   "stynastmc.configuration.layout": "Layout",
   "stynastmc.configuration.corner": "Corner",
   "stynastmc.configuration.offset_x": "Side offset",
@@ -290,5 +289,19 @@
   "stynastmc.trade.failed": "Could not send Trade Cycling packet, see log",
   "stynastmc.trade.none": "None picked",
   "stynastmc.tooltip.preview.compact": "view contents",
-  "stynastmc.tooltip.preview.full": "view full contents"
+  "stynastmc.tooltip.preview.full": "view full contents",
+  "key.stynastmc.photomode": "Toggle photo mode",
+  "stynastmc.photomode.title": "Photo Mode",
+  "stynastmc.photomode.hint": "Left click: shot menu   Scroll: speed   %s: exit",
+  "stynastmc.photomode.panel_hint": "Shift click Save to keep this open and take another. Esc to keep flying.",
+  "stynastmc.photomode.lock_time": "Lock time",
+  "stynastmc.photomode.weather": "Weather: %s",
+  "stynastmc.photomode.weather.server": "Server",
+  "stynastmc.photomode.weather.clear": "Clear",
+  "stynastmc.photomode.weather.rain": "Rain",
+  "stynastmc.photomode.weather.thunder": "Thunder",
+  "stynastmc.photomode.fog": "Fog",
+  "stynastmc.photomode.save": "Save screenshot",
+  "stynastmc.photomode.exit": "Exit photo mode",
+  "stynastmc.photomode.failed": "Screenshot failed, see log"
 }

@@ -11,6 +11,7 @@ public final class ModCompat {
     public static final String ENCHANT_DESCRIPTIONS = "enchdesc";
     public static final String FIRST_PERSON = "firstperson";
     public static final String LOOT_JOURNAL = "loot_journal";
+    public static final String MAHOU_TSUKAI = "mahoutsukai";
     public static final String MORE_OVERLAYS = "moreoverlays";
     public static final String SHULKER_BOX_TOOLTIP = "shulkerboxtooltip";
 
